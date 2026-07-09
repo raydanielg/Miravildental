@@ -16,23 +16,11 @@
 </style>
 
 @php
-    $user = auth()->user();
     $isAdmin = $user->isAdmin();
+    $isDoctor = $user->isDoctor();
     $isReception = $user->isReception();
 
-    // Sample KPI data (replace with real model queries as modules are built)
-    $totalPatients = 1248;
-    $newPatientsThisWeek = 34;
-    $appointmentsToday = 18;
-    $appointmentsThisWeek = 142;
-    $treatmentsDone = 89;
-    $treatmentTarget = 120;
-    $revenueToday = 1250000;
-    $revenueThisWeek = 8400000;
-    $successRate = 96;
-    $occupancyRate = 78;
-
-    $fmt = fn($n) => 'TSh ' . number_format($n);
+    $fmt = fn($n) => 'TSh ' . number_format($n, 0);
 @endphp
 
 {{-- Welcome Header --}}
@@ -91,7 +79,7 @@
                 <div class="text-xs text-emerald-600 font-medium">+12.5%</div>
             </div>
         </div>
-        @php $revenueDays = [900000, 1200000, 800000, 1500000, 1100000, 1700000, 1250000]; $dayLabels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; $maxRev = max($revenueDays) ?: 1; @endphp
+        @php $maxRev = $revenueDays->max() ?: 1; @endphp
         <div class="flex items-end gap-[6px] h-52">
             @foreach($revenueDays as $i => $rev)
             @php $pct = min(100, ($rev / $maxRev) * 100); $isToday = $i === count($revenueDays) - 1; @endphp
@@ -113,7 +101,7 @@
             $circles = [
                 ['label' => 'Success Rate', 'value' => $successRate, 'color' => '#10b981'],
                 ['label' => 'Clinic Occupancy', 'value' => $occupancyRate, 'color' => '#f59e0b'],
-                ['label' => 'Treatment Target', 'value' => round(($treatmentsDone / $treatmentTarget) * 100), 'color' => '#8b5cf6'],
+                ['label' => 'Treatment Target', 'value' => $treatmentTargetPct, 'color' => '#8b5cf6'],
             ];
         @endphp
 
@@ -150,21 +138,18 @@
                     <th class="px-5 py-2.5 font-medium">Status</th>
                 </tr></thead>
                 <tbody>
-                    @php $appointments = [ ['09:00','John Mwansa','Consultation','confirmed'], ['10:30','Maria Joseph','Cleaning','confirmed'], ['11:15','Peter Chen','Filling','pending'], ['14:00','Grace Ochieng','Root Canal','confirmed'] ]; @endphp
-                    @foreach($appointments as $appt)
+                    @forelse($todayAppointments as $appt)
                     <tr class="border-t border-gray-100 hover:bg-gray-50/50 transition-colors">
-                        <td class="px-5 py-2.5 text-xs text-gray-600 font-medium">{{ $appt[0] }}</td>
-                        <td class="px-5 py-2.5 text-xs text-gray-900">{{ $appt[1] }}</td>
-                        <td class="px-5 py-2.5 text-xs text-gray-600">{{ $appt[2] }}</td>
+                        <td class="px-5 py-2.5 text-xs text-gray-600 font-medium">{{ optional($appt->start_time)->format('H:i') }}</td>
+                        <td class="px-5 py-2.5 text-xs text-gray-900">{{ $appt->patient->name ?? '-' }}</td>
+                        <td class="px-5 py-2.5 text-xs text-gray-600">{{ $appt->service->name ?? '-' }}</td>
                         <td class="px-5 py-2.5">
-                            @if($appt[3] === 'confirmed')
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">Confirmed</span>
-                            @else
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-100">Pending</span>
-                            @endif
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-{{ $appt->statusColor() }}-50 text-{{ $appt->statusColor() }}-700 border border-{{ $appt->statusColor() }}-100">{{ $appt->statusLabel() }}</span>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr><td colspan="4" class="px-5 py-6 text-center text-gray-400 text-xs">No appointments today</td></tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -176,19 +161,20 @@
             <a href="#" class="text-xs font-medium text-emerald-600 hover:text-emerald-700">View All</a>
         </div>
         <div class="p-5 space-y-3">
-            @php $patients = [ ['John Mwansa','john@email.com','2 days ago'], ['Maria Joseph','maria@email.com','4 days ago'], ['Peter Chen','peter@email.com','1 week ago'] ]; @endphp
-            @foreach($patients as $p)
+            @forelse($recentPatients as $p)
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs">
-                    {{ strtoupper(substr($p[0], 0, 1)) }}
+                    {{ strtoupper(substr($p->name, 0, 1)) }}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">{{ $p[0] }}</p>
-                    <p class="text-xs text-gray-500">{{ $p[1] }}</p>
+                    <p class="text-sm font-medium text-gray-900 truncate">{{ $p->name }}</p>
+                    <p class="text-xs text-gray-500">{{ $p->phone ?? $p->file_number }}</p>
                 </div>
-                <span class="text-[10px] text-gray-400 shrink-0">{{ $p[2] }}</span>
+                <span class="text-[10px] text-gray-400 shrink-0">{{ $p->created_at->diffForHumans() }}</span>
             </div>
-            @endforeach
+            @empty
+            <p class="text-sm text-gray-400 text-center py-4">No patients yet</p>
+            @endforelse
         </div>
     </div>
 </div>
@@ -208,25 +194,26 @@
             <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-md border border-emerald-100">{{ $appointmentsToday }} today</span>
         </div>
         <div class="space-y-3">
-            @php $schedule = [ ['09:00','John Mwansa','Consultation','checked-in'], ['10:30','Maria Joseph','Cleaning','waiting'], ['11:15','Peter Chen','Filling','upcoming'] ]; @endphp
-            @foreach($schedule as $s)
-            <div class="flex items-center gap-3 p-3 rounded-lg border {{ $s[3] === 'checked-in' ? 'border-emerald-200 bg-emerald-50/30' : 'border-gray-100 hover:bg-gray-50' }} transition-colors">
+            @forelse($receptionSchedule as $s)
+            <div class="flex items-center gap-3 p-3 rounded-lg border {{ $s->checkin_status === 'checked-in' ? 'border-emerald-200 bg-emerald-50/30' : 'border-gray-100 hover:bg-gray-50' }} transition-colors">
                 <div class="w-12 text-center shrink-0">
-                    <p class="text-xs font-bold text-gray-800">{{ $s[0] }}</p>
+                    <p class="text-xs font-bold text-gray-800">{{ optional($s->start_time)->format('H:i') }}</p>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-gray-900">{{ $s[1] }}</p>
-                    <p class="text-xs text-gray-500">{{ $s[2] }}</p>
+                    <p class="text-sm font-semibold text-gray-900">{{ $s->patient->name ?? '-' }}</p>
+                    <p class="text-xs text-gray-500">{{ $s->service->name ?? '-' }}</p>
                 </div>
-                @if($s[3] === 'checked-in')
+                @if($s->checkin_status === 'checked-in')
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-100 text-emerald-700">Checked In</span>
-                @elseif($s[3] === 'waiting')
+                @elseif($s->checkin_status === 'waiting')
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-gold-100 text-gold-700">Waiting</span>
                 @else
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-600">Upcoming</span>
                 @endif
             </div>
-            @endforeach
+            @empty
+            <p class="text-sm text-gray-400 text-center py-4">No schedule entries today</p>
+            @endforelse
         </div>
     </div>
 

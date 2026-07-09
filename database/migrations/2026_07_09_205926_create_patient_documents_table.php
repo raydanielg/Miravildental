@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('patient_documents', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
+            $table->string('document_type');
+            $table->string('title')->nullable();
+            $table->string('file_path');
+            $table->string('mime_type')->nullable();
+            $table->unsignedBigInteger('file_size')->nullable();
+            $table->text('notes')->nullable();
+            $table->foreignId('uploaded_by')->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });
     }

@@ -22,6 +22,12 @@ class UserSeeder extends Seeder
                 'role' => 'admin',
             ],
             [
+                'name' => 'Doctor User',
+                'email' => 'doctor@miravil.com',
+                'password' => Hash::make('password'),
+                'role' => 'doctor',
+            ],
+            [
                 'name' => 'Reception User',
                 'email' => 'reception@miravil.com',
                 'password' => Hash::make('password'),

@@ -22,6 +22,11 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function isDoctor(): bool
+    {
+        return $this->role === 'doctor';
+    }
+
     public function isReception(): bool
     {
         return $this->role === 'reception';

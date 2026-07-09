@@ -14,4 +14,23 @@ return new class extends Migration
         Schema::create('sms_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->nullable()->constrained('patients')->onDelete('set null');
-            $table->foreignId('appointment_id')->nullable()->constrained('appointments
+            $table->foreignId('appointment_id')->nullable()->constrained('appointments')->onDelete('set null');
+            $table->string('phone');
+            $table->text('message');
+            $table->string('trigger')->nullable();
+            $table->enum('status', ['pending','sent','failed','delivered'])->default('pending');
+            $table->string('provider_reference')->nullable();
+            $table->text('response')->nullable();
+            $table->foreignId('sent_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('sms_logs');
+    }
+};
