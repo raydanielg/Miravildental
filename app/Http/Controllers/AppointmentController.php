@@ -73,7 +73,31 @@ class AppointmentController extends Controller
             return back()->withInput()->withErrors(['start_time' => 'This slot conflicts with an existing appointment for the selected doctor or room.']);
         }
 
-        Appointment::create($appointment);
+        $appt = Appointment::create($appointment);
+        $appt->load(['patient', 'service']);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Miadi imesajiliwa kwa mafanikio.',
+                'appointment' => [
+                    'id' => $appt->id,
+                    'time' => $appt->start_time?->format('H:i') . ' - ' . $appt->end_time?->format('H:i'),
+                    'patient' => $appt->patient?->name,
+                    'service' => $appt->service?->name ?? '-',
+                    'doctor' => $appt->doctor?->name ?? '-',
+                    'room' => $appt->room?->name ?? '-',
+                    'status' => $appt->status,
+                    'statusLabel' => $appt->statusLabel(),
+                    'statusColor' => $appt->statusColor(),
+                    'show_url' => route('appointments.show', $appt),
+                    'edit_url' => route('appointments.edit', $appt),
+                    'edit_form_url' => route('appointments.edit-form', $appt),
+                    'update_url' => route('appointments.update', $appt),
+                    'delete_url' => route('appointments.destroy', $appt),
+                ],
+            ]);
+        }
 
         return redirect()->route('appointments.index', ['date' => $appointment['appointment_date']])
             ->with('status', 'Appointment booked successfully.');
@@ -94,6 +118,16 @@ class AppointmentController extends Controller
         $statuses = Appointment::STATUS_LABELS;
 
         return view('appointments.edit', compact('appointment', 'patients', 'doctors', 'services', 'rooms', 'statuses'));
+    }
+
+    public function editForm(Appointment $appointment)
+    {
+        $patients = Patient::orderBy('name')->get();
+        $doctors = User::where('role', 'doctor')->get();
+        $services = Service::where('is_active', true)->get();
+        $rooms = Room::where('is_active', true)->get();
+        $statuses = Appointment::STATUS_LABELS;
+        return view('appointments.edit-form', compact('appointment', 'patients', 'doctors', 'services', 'rooms', 'statuses'));
     }
 
     public function update(Request $request, Appointment $appointment)
@@ -120,14 +154,38 @@ class AppointmentController extends Controller
         }
 
         $appointment->update($data);
+        $appointment->load(['patient', 'service', 'doctor', 'room']);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Miadi imesasishwa.',
+                'appointment' => [
+                    'id' => $appointment->id,
+                    'time' => $appointment->start_time?->format('H:i') . ' - ' . $appointment->end_time?->format('H:i'),
+                    'patient' => $appointment->patient?->name,
+                    'service' => $appointment->service?->name ?? '-',
+                    'doctor' => $appointment->doctor?->name ?? '-',
+                    'room' => $appointment->room?->name ?? '-',
+                    'status' => $appointment->status,
+                    'statusLabel' => $appointment->statusLabel(),
+                    'statusColor' => $appointment->statusColor(),
+                ],
+            ]);
+        }
 
         return redirect()->route('appointments.index', ['date' => $data['appointment_date']])
             ->with('status', 'Appointment updated successfully.');
     }
 
-    public function destroy(Appointment $appointment)
+    public function destroy(Request $request, Appointment $appointment)
     {
         $appointment->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Miadi imefutwa.']);
+        }
+
         return redirect()->route('appointments.index')->with('status', 'Appointment deleted successfully.');
     }
 

@@ -12,6 +12,7 @@ class SmsTemplate extends Model
     protected $fillable = [
         'name',
         'trigger',
+        'category',
         'body',
         'is_active',
         'send_before_hours',

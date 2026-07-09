@@ -30,9 +30,47 @@ class SettingController extends Controller
             'address' => 'nullable|string',
             'currency' => 'required|string|max:10',
             'timezone' => 'required|string|max:50',
+            'logo' => 'nullable|image|max:2048',
+            'photos' => 'nullable|array',
+            'photos.*' => 'image|max:2048',
         ]);
 
-        ClinicSetting::updateOrCreate(['id' => 1], $validated);
+        $settings = ClinicSetting::firstOrNew(['id' => 1]);
+
+        if ($request->hasFile('logo')) {
+            if ($settings->logo_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($settings->logo_path);
+            }
+            $validated['logo_path'] = $request->file('logo')->store('clinic', 'public');
+        }
+
+        $existingPhotos = $settings->photos ?? [];
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photo) {
+                $existingPhotos[] = $photo->store('clinic/photos', 'public');
+            }
+            $validated['photos'] = $existingPhotos;
+        }
+
+        $settings->fill($validated);
+        $settings->save();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Taarifa za kliniki zimehifadhiwa.',
+                'clinic' => [
+                    'name' => $settings->clinic_name,
+                    'phone' => $settings->phone,
+                    'email' => $settings->email,
+                    'address' => $settings->address,
+                    'currency' => $settings->currency,
+                    'timezone' => $settings->timezone,
+                    'logo_url' => $settings->logo_path ? asset('storage/' . $settings->logo_path) : null,
+                    'photos' => collect($settings->photos ?? [])->map(fn($p) => asset('storage/' . $p))->values(),
+                ],
+            ]);
+        }
 
         return redirect()->route('settings.clinic')->with('status', 'Clinic profile updated successfully.');
     }
@@ -66,6 +104,10 @@ class SettingController extends Controller
             );
         }
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Masaa ya kazi yamehifadhiwa.']);
+        }
+
         return redirect()->route('settings.working-hours')->with('status', 'Working hours updated successfully.');
     }
 
@@ -79,6 +121,13 @@ class SettingController extends Controller
     {
         $validated = $request->validate([
             'sender_id' => 'required|string|max:20',
+            'sms_provider' => 'nullable|string|max:50',
+            'sms_api_username' => 'nullable|string|max:255',
+            'sms_api_password' => 'nullable|string|max:255',
+            'sms_api_key' => 'nullable|string|max:255',
+            'sms_api_secret' => 'nullable|string|max:255',
+            'sms_api_url' => 'nullable|string|max:255',
+            'sms_test_phone' => 'nullable|string|max:50',
             'default_appointment_duration' => 'required|integer|min:5',
             'reminder_24h_before' => 'required|integer|min:0',
             'reminder_2h_before' => 'required|integer|min:0',
@@ -87,6 +136,16 @@ class SettingController extends Controller
 
         ClinicSetting::updateOrCreate(['id' => 1], $validated);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Mipangilio ya SMS imehifadhiwa.']);
+        }
+
         return redirect()->route('settings.sms')->with('status', 'SMS settings updated successfully.');
+    }
+
+    public function account()
+    {
+        $user = auth()->user();
+        return view('settings.account', compact('user'));
     }
 }

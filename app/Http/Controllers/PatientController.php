@@ -59,7 +59,27 @@ class PatientController extends Controller
         $validated['registered_by'] = auth()->id();
         $validated['new_patient'] = true;
 
-        Patient::create($validated);
+        $patient = Patient::create($validated);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Mgonjwa amesajiliwa kwa mafanikio.',
+                'patient' => [
+                    'id' => $patient->id,
+                    'file_number' => $patient->file_number,
+                    'name' => $patient->name,
+                    'phone' => $patient->phone ?? '-',
+                    'gender' => $patient->gender ?? '-',
+                    'new_patient' => $patient->new_patient,
+                    'show_url' => route('patients.show', $patient),
+                    'edit_url' => route('patients.edit', $patient),
+                    'edit_form_url' => route('patients.edit-form', $patient),
+                    'update_url' => route('patients.update', $patient),
+                    'delete_url' => route('patients.destroy', $patient),
+                ],
+            ]);
+        }
 
         return redirect()->route('patients.index')->with('status', 'Patient registered successfully.');
     }
@@ -73,6 +93,11 @@ class PatientController extends Controller
     public function edit(Patient $patient)
     {
         return view('patients.edit', compact('patient'));
+    }
+
+    public function editForm(Patient $patient)
+    {
+        return view('patients.edit-form', compact('patient'));
     }
 
     public function update(Request $request, Patient $patient)
@@ -96,12 +121,32 @@ class PatientController extends Controller
 
         $patient->update($validated);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Taarifa za mgonjwa zimehifadhiwa.',
+                'patient' => [
+                    'id' => $patient->id,
+                    'file_number' => $patient->file_number,
+                    'name' => $patient->name,
+                    'phone' => $patient->phone ?? '-',
+                    'gender' => $patient->gender ?? '-',
+                    'new_patient' => $patient->new_patient,
+                ],
+            ]);
+        }
+
         return redirect()->route('patients.index')->with('status', 'Patient updated successfully.');
     }
 
-    public function destroy(Patient $patient)
+    public function destroy(Request $request, Patient $patient)
     {
         $patient->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Mgonjwa amefutwa.']);
+        }
+
         return redirect()->route('patients.index')->with('status', 'Patient deleted successfully.');
     }
 

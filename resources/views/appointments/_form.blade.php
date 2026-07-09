@@ -2,10 +2,11 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
         <label class="block text-xs font-medium text-gray-700 mb-1">Patient</label>
+        <input type="text" data-patient-filter placeholder="Tafuta kwa jina, simu au file..." class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500 mb-1">
         <select name="patient_id" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500" required>
             <option value="">Select patient</option>
             @foreach($patients as $p)
-            <option value="{{ $p->id }}" @selected(old('patient_id', $appointment->patient_id ?? ($preselectedPatient->id ?? '')) == $p->id)>{{ $p->name }} ({{ $p->file_number }})</option>
+            <option value="{{ $p->id }}" data-search="{{ strtolower($p->name . ' ' . ($p->phone ?? '') . ' ' . $p->file_number) }}" @selected(old('patient_id') == $p->id)>{{ $p->name }} ({{ $p->file_number }})</option>
             @endforeach
         </select>
     </div>

@@ -29,7 +29,10 @@ class ClinicalRecordController extends Controller
             ->latest('record_date')
             ->paginate(20);
 
-        return view('clinical-records.index', compact('records', 'search'));
+        $patients = Patient::orderBy('name')->get();
+        $services = Service::where('is_active', true)->get();
+
+        return view('clinical-records.index', compact('records', 'search', 'patients', 'services'));
     }
 
     public function create(Request $request)
@@ -74,10 +77,14 @@ class ClinicalRecordController extends Controller
         $validated['service_id'] = $validated['service_id'] ?? null;
         $validated['appointment_id'] = $validated['appointment_id'] ?? null;
 
-        ClinicalRecord::create($validated);
+        $record = ClinicalRecord::create($validated);
 
         if ($validated['appointment_id']) {
             Appointment::where('id', $validated['appointment_id'])->update(['status' => Appointment::STATUS_COMPLETED]);
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Rekodi ya matibabu imehifadhiwa.', 'record' => ['id' => $record->id, 'patient' => $record->patient?->name]]);
         }
 
         return redirect()->route('clinical-records.index')->with('status', 'Treatment record saved successfully.');
@@ -120,9 +127,14 @@ class ClinicalRecordController extends Controller
         return redirect()->route('clinical-records.index')->with('status', 'Treatment record updated successfully.');
     }
 
-    public function destroy(ClinicalRecord $clinicalRecord)
+    public function destroy(Request $request, ClinicalRecord $clinicalRecord)
     {
         $clinicalRecord->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Rekodi imefutwa.']);
+        }
+
         return redirect()->route('clinical-records.index')->with('status', 'Treatment record deleted successfully.');
     }
 }

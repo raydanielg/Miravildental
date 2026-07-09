@@ -36,12 +36,14 @@ Route::middleware(['auth', 'role:admin,doctor,reception'])->group(function () {
 
     // Patients
     Route::resource('patients', PatientController::class);
+    Route::get('patients/{patient}/edit-form', [PatientController::class, 'editForm'])->name('patients.edit-form');
     Route::get('patients/{patient}/documents', [PatientController::class, 'documents'])->name('patients.documents');
     Route::post('patients/{patient}/documents', [PatientController::class, 'storeDocument'])->name('patients.documents.store');
     Route::delete('patients/documents/{document}', [PatientController::class, 'destroyDocument'])->name('patients.documents.destroy');
 
     // Appointments
     Route::resource('appointments', AppointmentController::class);
+    Route::get('appointments/{appointment}/edit-form', [AppointmentController::class, 'editForm'])->name('appointments.edit-form');
     Route::post('appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])->name('appointments.status');
     Route::get('appointments/{appointment}/clinical-record/create', [ClinicalRecordController::class, 'createFromAppointment'])->name('clinical-records.create-from-appointment');
 
@@ -50,6 +52,8 @@ Route::middleware(['auth', 'role:admin,doctor,reception'])->group(function () {
 
     // Reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
+    Route::post('reports/email', [ReportController::class, 'email'])->name('reports.email');
 
     // My profile (non-admin)
     Route::get('profile', [StaffController::class, 'profile'])->name('staff.profile');
@@ -63,6 +67,9 @@ Route::middleware(['auth', 'role:admin,doctor,reception'])->group(function () {
     Route::middleware(['role:admin,reception'])->group(function () {
         Route::get('sms/send', [SmsController::class, 'send'])->name('sms.send');
         Route::post('sms/send', [SmsController::class, 'store'])->name('sms.store');
+        Route::post('sms/test', [SmsController::class, 'test'])->name('sms.test');
+        Route::get('sms/campaign', [SmsController::class, 'campaign'])->name('sms.campaign');
+        Route::post('sms/campaign', [SmsController::class, 'sendCampaign'])->name('sms.campaign.send');
         Route::get('sms/logs', [SmsController::class, 'logs'])->name('sms.logs');
     });
 
@@ -75,6 +82,7 @@ Route::middleware(['auth', 'role:admin,doctor,reception'])->group(function () {
 
         // SMS templates & automation
         Route::get('sms/templates', [SmsController::class, 'templates'])->name('sms.templates');
+        Route::post('sms/templates', [SmsController::class, 'storeTemplate'])->name('sms.templates.store');
         Route::put('sms/templates/{template}', [SmsController::class, 'updateTemplate'])->name('sms.templates.update');
 
         // Staff & Roles
@@ -92,5 +100,6 @@ Route::middleware(['auth', 'role:admin,doctor,reception'])->group(function () {
         Route::put('settings/working-hours', [SettingController::class, 'updateWorkingHours'])->name('settings.working-hours.update');
         Route::get('settings/sms', [SettingController::class, 'sms'])->name('settings.sms');
         Route::put('settings/sms', [SettingController::class, 'updateSms'])->name('settings.sms.update');
+        Route::get('settings/account', [SettingController::class, 'account'])->name('settings.account');
     });
 });

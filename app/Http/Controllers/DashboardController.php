@@ -6,6 +6,8 @@ use App\Models\Appointment;
 use App\Models\ClinicalRecord;
 use App\Models\Patient;
 use App\Models\SmsLog;
+use App\Models\Room;
+use App\Models\Service;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -108,6 +110,13 @@ class DashboardController extends Controller
         // No-show count for admin
         $noShows = $user->isDoctor() ? 0 : Appointment::where('status', Appointment::STATUS_NO_SHOW)->count();
 
+        // Form data for dashboard slide-overs
+        $patientsList = Patient::orderBy('name')->get();
+        $doctorsList = User::where('role', 'doctor')->get();
+        $servicesList = Service::where('is_active', true)->get();
+        $roomsList = Room::where('is_active', true)->get();
+        $statuses = Appointment::STATUS_LABELS;
+
         return view('dashboard', compact(
             'user',
             'totalPatients',
@@ -127,7 +136,12 @@ class DashboardController extends Controller
             'occupancyRate',
             'treatmentTargetPct',
             'smsSentToday',
-            'noShows'
+            'noShows',
+            'patientsList',
+            'doctorsList',
+            'servicesList',
+            'roomsList',
+            'statuses'
         ));
     }
 }

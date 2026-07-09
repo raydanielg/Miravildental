@@ -28,6 +28,36 @@
         @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
         .animate-fade { animation: fadeIn 0.3s ease-out both; }
         .sidebar-link { transition: all 0.2s ease; }
+
+        @media print {
+            @page { size: A4; margin: 15mm; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #dashboardSidebar, header, .no-print, nav, button, .pagination, .fixed.inset-0.z-50, #mobileOverlay, canvas { display: none !important; }
+            main { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+            .print-header { display: block !important; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #94a3b8; padding: 10px 12px; font-size: 13px; }
+            th { background: #e2e8f0 !important; font-weight: 700; }
+            tr:nth-child(even) td { background: #f8fafc !important; }
+            table thead tr th:last-child, table tbody tr td:last-child { display: none !important; }
+            a { text-decoration: none; color: #000; }
+            .shadow-sm, .rounded-xl { box-shadow: none !important; border: none !important; }
+        }
+        .print-header { display: none; }
+        .settings-bg {
+            background-image: url('/flat-abstract-background-pattern-vector_822782-866.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .settings-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(248, 250, 252, 0.92);
+            z-index: 0;
+        }
+        .settings-bg > * { position: relative; z-index: 1; }
         .sidebar-link:hover { background: rgba(255,255,255,0.06); }
         .sidebar-link.active { background: rgba(255,255,255,0.08); color: #fff; }
         .sidebar-submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
@@ -106,6 +136,7 @@
                 </button>
                 <div id="menu-sms" class="sidebar-submenu pl-11 space-y-0.5 {{ request()->routeIs('sms*') ? 'open' : '' }}">
                     <a href="{{ route('sms.send') }}" class="block py-1.5 text-xs text-emerald-200/70 hover:text-white transition-colors {{ request()->routeIs('sms.send') ? 'text-white font-medium' : '' }}">Send SMS</a>
+                    <a href="{{ route('sms.campaign') }}" class="block py-1.5 text-xs text-emerald-200/70 hover:text-white transition-colors {{ request()->routeIs('sms.campaign') ? 'text-white font-medium' : '' }}">SMS Campaign</a>
                     <a href="{{ route('sms.logs') }}" class="block py-1.5 text-xs text-emerald-200/70 hover:text-white transition-colors {{ request()->routeIs('sms.logs') ? 'text-white font-medium' : '' }}">SMS Logs</a>
                     @if($user->isAdmin())
                     <a href="{{ route('sms.templates') }}" class="block py-1.5 text-xs text-emerald-200/70 hover:text-white transition-colors {{ request()->routeIs('sms.templates') ? 'text-white font-medium' : '' }}">Templates & Automation</a>
@@ -194,21 +225,57 @@
                 <h1 class="text-lg font-bold text-gray-800">@yield('page_title', 'Dashboard')</h1>
             </div>
             <div class="flex items-center gap-4">
-                {{-- Search --}}
-                <div class="hidden md:flex items-center bg-gray-50 rounded-lg px-3 py-1.5 border border-gray-100">
+                {{-- Global Search --}}
+                <form method="GET" action="{{ route('patients.index') }}" class="hidden md:flex items-center bg-gray-50 rounded-lg px-3 py-1.5 border border-gray-100">
                     <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" placeholder="Search..." class="bg-transparent text-sm outline-none w-48 text-gray-600 placeholder-gray-400">
-                </div>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search patients..." class="bg-transparent text-sm outline-none w-48 text-gray-600 placeholder-gray-400">
+                </form>
+
                 {{-- Notifications --}}
-                <button class="relative p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-gold-500 rounded-full"></span>
-                </button>
+                <div class="relative">
+                    <button onclick="document.getElementById('notificationDropdown').classList.toggle('hidden')" class="relative p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                        @php
+                            $notificationCount = \App\Models\Appointment::today()->whereIn('status', [\App\Models\Appointment::STATUS_BOOKED, \App\Models\Appointment::STATUS_CONFIRMED])->count();
+                        @endphp
+                        @if($notificationCount > 0)
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-gold-500 rounded-full"></span>
+                        @endif
+                    </button>
+                    <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-xl border border-gray-100 shadow-lg z-50 overflow-hidden">
+                        <div class="px-4 py-3 border-b border-gray-100">
+                            <p class="text-xs font-semibold text-gray-900">Notifications</p>
+                        </div>
+                        <div class="max-h-64 overflow-y-auto">
+                            @if($notificationCount > 0)
+                                <div class="px-4 py-3 border-b border-gray-50 hover:bg-gray-50">
+                                    <p class="text-xs text-gray-800 font-medium">Upcoming appointments today</p>
+                                    <p class="text-[10px] text-gray-500 mt-0.5">{{ $notificationCount }} patient(s) scheduled</p>
+                                </div>
+                            @else
+                                <div class="px-4 py-6 text-center text-xs text-gray-400">No new notifications</div>
+                            @endif
+                        </div>
+                        <a href="{{ route('appointments.index') }}" class="block px-4 py-2 text-[10px] font-medium text-emerald-600 hover:bg-emerald-50 text-center border-t border-gray-100">View all appointments</a>
+                    </div>
+                </div>
             </div>
         </header>
 
         {{-- Page Content --}}
-        <main class="flex-1 p-6 animate-fade">
+        <main class="flex-1 p-6 animate-fade relative {{ request()->routeIs('settings.*') ? 'settings-bg' : '' }}">
+            @php
+                $printSettings = \App\Models\ClinicSetting::current();
+            @endphp
+            <div class="print-header mb-6 text-center border-b-2 border-emerald-700 pb-4">
+                <h1 class="text-2xl font-bold text-emerald-900">{{ $printSettings?->clinic_name ?? 'Miravil Specialised Dental Centre' }}</h1>
+                <p class="text-sm text-gray-700 mt-1">{{ $printSettings?->address ?? '' }}</p>
+                <div class="flex items-center justify-center gap-4 text-sm text-gray-700 mt-1">
+                    @if($printSettings?->phone)<span>Simu: {{ $printSettings->phone }}</span>@endif
+                    @if($printSettings?->email)<span>Email: {{ $printSettings->email }}</span>@endif
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Tarehe: {{ now()->format('d M Y') }}</p>
+            </div>
             @yield('content')
         </main>
 
@@ -227,6 +294,27 @@
             menu.classList.toggle('open');
             if (arrow) arrow.classList.toggle('rotate-180');
         }
+
+        // SweetAlert2 delete confirmations
+        (function() {
+            document.querySelectorAll('form[data-confirm]').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: this.dataset.confirm,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ef4444',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) this.submit();
+                    });
+                });
+            });
+        })();
 
         // SweetAlert2 side toasts
         (function() {

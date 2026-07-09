@@ -30,16 +30,16 @@
         <p class="text-sm text-gray-500 mt-0.5">Here's what's happening at {{ config('app.name', 'Laravel') }} today.</p>
     </div>
     <div class="flex items-center gap-2">
-        @if($isAdmin)
-            <a href="#" class="px-3 py-1.5 text-xs font-medium bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors inline-flex items-center gap-1.5 shadow-sm">
+        @if($isAdmin || $isReception)
+            <button type="button" onclick="openDashboardAppointmentModal()" class="px-3 py-1.5 text-xs font-medium bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors inline-flex items-center gap-1.5 shadow-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 New Appointment
-            </a>
+            </button>
         @endif
-        <a href="#" class="px-3 py-1.5 text-xs font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors inline-flex items-center gap-1.5">
+        <button type="button" onclick="openDashboardPatientModal()" class="px-3 py-1.5 text-xs font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors inline-flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             Add Patient
-        </a>
+        </button>
     </div>
 </div>
 
@@ -241,4 +241,206 @@
     </div>
 </div>
 @endif
+
+{{-- Add Patient Slide-over --}}
+<div id="dashboardPatientModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeDashboardPatientModal()"></div>
+    <div class="absolute inset-y-0 right-0 w-full max-w-xl bg-white shadow-2xl transform transition-transform translate-x-full duration-300 ease-in-out flex flex-col" id="dashboardPatientSlidePanel">
+        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
+            <h3 class="text-sm font-semibold text-gray-900">Add Patient</h3>
+            <button onclick="closeDashboardPatientModal()" class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-5">
+            <form id="dashboardPatientForm" method="POST" action="{{ route('patients.store') }}">
+                @csrf
+                @include('patients._form')
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Add Appointment Slide-over --}}
+<div id="dashboardAppointmentModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeDashboardAppointmentModal()"></div>
+    <div class="absolute inset-y-0 right-0 w-full max-w-xl bg-white shadow-2xl transform transition-transform translate-x-full duration-300 ease-in-out flex flex-col" id="dashboardAppointmentSlidePanel">
+        <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
+            <h3 class="text-sm font-semibold text-gray-900">Book Appointment</h3>
+            <button onclick="closeDashboardAppointmentModal()" class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-5">
+            <form id="dashboardAppointmentForm" method="POST" action="{{ route('appointments.store') }}">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Patient</label>
+                        <input type="text" id="dashApptPatientSearch" placeholder="Tafuta kwa jina, simu au file..." class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500 mb-1">
+                        <select name="patient_id" id="dashApptPatientSelect" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500" required>
+                            <option value="">Select patient</option>
+                            @foreach($patientsList as $p)
+                            <option value="{{ $p->id }}" data-search="{{ strtolower($p->name . ' ' . ($p->phone ?? '') . ' ' . $p->file_number) }}">{{ $p->name }} ({{ $p->file_number }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Doctor</label>
+                        <select name="doctor_id" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
+                            <option value="">Select doctor</option>
+                            @foreach($doctorsList as $d)
+                            <option value="{{ $d->id }}">{{ $d->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Service</label>
+                        <select name="service_id" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
+                            <option value="">Select service</option>
+                            @foreach($servicesList as $s)
+                            <option value="{{ $s->id }}">{{ $s->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Room</label>
+                        <select name="room_id" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
+                            <option value="">Select room</option>
+                            @foreach($roomsList as $r)
+                            <option value="{{ $r->id }}">{{ $r->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Date</label>
+                        <input type="date" name="appointment_date" value="{{ today()->toDateString() }}" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Start Time</label>
+                        <input type="time" name="start_time" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Status</label>
+                        <select name="status" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
+                            @foreach($statuses as $value => $label)
+                            <option value="{{ $value }}" @selected($value == 'booked')>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Notes</label>
+                        <textarea name="notes" rows="3" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500"></textarea>
+                    </div>
+                </div>
+                <div class="mt-6 flex items-center gap-2">
+                    <button type="submit" class="px-4 py-2 text-xs font-medium bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Save Appointment</button>
+                    <button type="button" onclick="closeDashboardAppointmentModal()" class="px-4 py-2 text-xs font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+function openDashboardPatientModal() {
+    const modal = document.getElementById('dashboardPatientModal');
+    const panel = document.getElementById('dashboardPatientSlidePanel');
+    modal.classList.remove('hidden');
+    setTimeout(() => panel.classList.remove('translate-x-full'), 10);
+    document.body.style.overflow = 'hidden';
+}
+function closeDashboardPatientModal() {
+    const modal = document.getElementById('dashboardPatientModal');
+    const panel = document.getElementById('dashboardPatientSlidePanel');
+    panel.classList.add('translate-x-full');
+    setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
+}
+
+function openDashboardAppointmentModal() {
+    const modal = document.getElementById('dashboardAppointmentModal');
+    const panel = document.getElementById('dashboardAppointmentSlidePanel');
+    modal.classList.remove('hidden');
+    setTimeout(() => panel.classList.remove('translate-x-full'), 10);
+    document.body.style.overflow = 'hidden';
+}
+function closeDashboardAppointmentModal() {
+    const modal = document.getElementById('dashboardAppointmentModal');
+    const panel = document.getElementById('dashboardAppointmentSlidePanel');
+    panel.classList.add('translate-x-full');
+    setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
+}
+
+// Patient filter in dashboard appointment form
+document.getElementById('dashApptPatientSearch').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    const select = document.getElementById('dashApptPatientSelect');
+    Array.from(select.querySelectorAll('option')).forEach(opt => {
+        if (!opt.value) { opt.style.display = 'block'; return; }
+        opt.style.display = opt.dataset.search?.includes(q) ? 'block' : 'none';
+    });
+});
+
+// AJAX patient form
+document.getElementById('dashboardPatientForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    const original = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Inahifadhi...';
+
+    fetch(this.action, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('#dashboardPatientForm input[name="_token"]').value,
+            'Accept': 'application/json',
+        },
+        body: new FormData(this),
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: data.message, showConfirmButton: false, timer: 3000 });
+            closeDashboardPatientModal();
+            this.reset();
+        } else {
+            throw new Error(data.message || 'Imeshindwa.');
+        }
+    })
+    .catch(err => Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: err.message, showConfirmButton: false, timer: 4000 }))
+    .finally(() => { btn.disabled = false; btn.textContent = original; });
+});
+
+// AJAX appointment form
+document.getElementById('dashboardAppointmentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    const original = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Inahifadhi...';
+
+    fetch(this.action, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('#dashboardAppointmentForm input[name="_token"]').value,
+            'Accept': 'application/json',
+        },
+        body: new FormData(this),
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: data.message, showConfirmButton: false, timer: 3000 });
+            closeDashboardAppointmentModal();
+            this.reset();
+        } else {
+            throw new Error(data.message || 'Imeshindwa.');
+        }
+    })
+    .catch(err => Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: err.message, showConfirmButton: false, timer: 4000 }))
+    .finally(() => { btn.disabled = false; btn.textContent = original; });
+});
+</script>
+@endpush

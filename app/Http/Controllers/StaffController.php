@@ -130,6 +130,10 @@ class StaffController extends Controller
 
         $user->update($validated);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Akaunti imehifadhiwa.']);
+        }
+
         return redirect()->route('staff.profile')->with('status', 'Profile updated successfully.');
     }
 

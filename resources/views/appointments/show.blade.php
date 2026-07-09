@@ -35,7 +35,7 @@
             <a href="{{ route('clinical-records.create-from-appointment', $appointment) }}" class="px-4 py-2 text-xs font-medium bg-gold-500 text-white rounded-lg hover:bg-gold-600">Add Treatment Record</a>
             @endif
         @endif
-        <form method="POST" action="{{ route('appointments.destroy', $appointment) }}" onsubmit="return confirm('Delete this appointment?');" class="inline">
+        <form method="POST" action="{{ route('appointments.destroy', $appointment) }}" data-confirm="Delete this appointment?" class="inline">
             @csrf @method('DELETE')
             <button type="submit" class="px-4 py-2 text-xs font-medium border border-red-300 text-red-600 rounded-lg hover:bg-red-50">Delete</button>
         </form>

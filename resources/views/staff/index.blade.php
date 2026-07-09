@@ -30,7 +30,7 @@
                     <td class="px-5 py-2.5 text-xs text-gray-600">{{ $user->created_at->format('M d, Y') }}</td>
                     <td class="px-5 py-2.5 text-right">
                         <a href="{{ route('staff.edit', $user) }}" class="text-xs font-medium text-emerald-600 hover:text-emerald-700 mr-2">Edit</a>
-                        <form method="POST" action="{{ route('staff.destroy', $user) }}" class="inline" onsubmit="return confirm('Delete this staff member?');">
+                        <form method="POST" action="{{ route('staff.destroy', $user) }}" class="inline" data-confirm="Delete this staff member?">
                             @csrf @method('DELETE')
                             <button type="submit" class="text-xs font-medium text-red-600 hover:text-red-700">Delete</button>
                         </form>
