@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +31,11 @@ class RegisterController extends Controller
      */
     protected $redirectTo = '/home';
 
+    protected function redirectTo(): string
+    {
+        return auth()->user()?->isCustomer() ? '/my-account' : '/home';
+    }
+
     /**
      * Create a new controller instance.
      *
@@ -50,6 +56,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone' => ['nullable', 'string', 'max:50'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -61,11 +68,30 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
             'password' => Hash::make($data['password']),
-            'role' => 'reception',
+            'role' => 'customer',
         ]);
+
+        $latest = Patient::orderByDesc('id')->value('file_number');
+        $number = 1;
+        if ($latest && preg_match('/MV-(\d+)/', $latest, $matches)) {
+            $number = (int) $matches[1] + 1;
+        }
+
+        Patient::create([
+            'file_number' => 'MV-' . str_pad($number, 4, '0', STR_PAD_LEFT),
+            'name' => $data['name'],
+            'phone' => $data['phone'] ?? null,
+            'email' => $data['email'],
+            'registered_by' => $user->id,
+            'user_id' => $user->id,
+            'new_patient' => true,
+        ]);
+
+        return $user;
     }
 }

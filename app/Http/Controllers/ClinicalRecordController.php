@@ -100,7 +100,15 @@ class ClinicalRecordController extends Controller
     {
         $patients = Patient::orderBy('name')->get();
         $services = Service::where('is_active', true)->get();
-        return view('clinical-records.edit', compact('clinicalRecord', 'patients', 'services'));
+        $appointment = $clinicalRecord->appointment;
+        return view('clinical-records.edit', compact('clinicalRecord', 'patients', 'services', 'appointment'));
+    }
+
+    public function editForm(ClinicalRecord $clinicalRecord)
+    {
+        $patients = Patient::orderBy('name')->get();
+        $services = Service::where('is_active', true)->get();
+        return view('clinical-records.edit-form', compact('clinicalRecord', 'patients', 'services'));
     }
 
     public function update(Request $request, ClinicalRecord $clinicalRecord)
@@ -123,6 +131,10 @@ class ClinicalRecordController extends Controller
         $validated['appointment_id'] = $validated['appointment_id'] ?? null;
 
         $clinicalRecord->update($validated);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Rekodi ya matibabu imesasishwa.', 'record' => ['id' => $clinicalRecord->id]]);
+        }
 
         return redirect()->route('clinical-records.index')->with('status', 'Treatment record updated successfully.');
     }

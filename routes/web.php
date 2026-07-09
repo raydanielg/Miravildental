@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClinicalRecordController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ReportController;
@@ -27,10 +28,10 @@ Route::get('/home', fn () => redirect()->route('dashboard'));
 
 /*
 |--------------------------------------------------------------------------
-| Shared dashboard area (admin, doctor, reception)
+| Shared dashboard area (admin, doctor, reception, customer)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:admin,doctor,reception'])->group(function () {
+Route::middleware(['auth', 'role:admin,doctor,reception,customer'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -49,6 +50,7 @@ Route::middleware(['auth', 'role:admin,doctor,reception'])->group(function () {
 
     // Clinical / Treatment Records
     Route::resource('clinical-records', ClinicalRecordController::class);
+    Route::get('clinical-records/{clinical_record}/edit-form', [ClinicalRecordController::class, 'editForm'])->name('clinical-records.edit-form');
 
     // Reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
@@ -102,4 +104,15 @@ Route::middleware(['auth', 'role:admin,doctor,reception'])->group(function () {
         Route::put('settings/sms', [SettingController::class, 'updateSms'])->name('settings.sms.update');
         Route::get('settings/account', [SettingController::class, 'account'])->name('settings.account');
     });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Customer area
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:customer'])->group(function () {
+    Route::get('my-account', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
+    Route::post('my-account/appointments', [CustomerController::class, 'bookAppointment'])->name('customer.appointments.book');
+    Route::put('my-account/profile', [CustomerController::class, 'updateProfile'])->name('customer.profile.update');
 });

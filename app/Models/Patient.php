@@ -27,6 +27,7 @@ class Patient extends Model
         'notes',
         'new_patient',
         'registered_by',
+        'user_id',
     ];
 
     protected $casts = [
@@ -37,6 +38,11 @@ class Patient extends Model
     public function registeredBy()
     {
         return $this->belongsTo(User::class, 'registered_by');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function appointments()
