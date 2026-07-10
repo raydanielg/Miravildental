@@ -7,6 +7,7 @@ use App\Models\Patient;
 use App\Models\Room;
 use App\Models\Service;
 use App\Models\User;
+use App\Services\SmsService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -198,6 +199,49 @@ class AppointmentController extends Controller
         $appointment->update(['status' => $request->status]);
 
         return redirect()->back()->with('status', 'Appointment status updated to ' . $appointment->statusLabel() . '.');
+    }
+
+    /**
+     * List online (website) bookings pending approval.
+     */
+    public function online(Request $request)
+    {
+        $status = $request->get('status', Appointment::STATUS_BOOKED);
+
+        $appointments = Appointment::with(['patient', 'doctor', 'service', 'room'])
+            ->where('status', $status)
+            ->whereDate('appointment_date', '>=', today()->subDays(30))
+            ->orderByDesc('created_at')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('appointments.online', compact('appointments', 'status'));
+    }
+
+    /**
+     * Approve an online booking, confirm the appointment and send SMS.
+     */
+    public function approve(Request $request, Appointment $appointment, SmsService $smsService)
+    {
+        if ($appointment->status !== Appointment::STATUS_BOOKED) {
+            return redirect()->back()->with('error', 'Only booked appointments can be approved.');
+        }
+
+        $appointment->update(['status' => Appointment::STATUS_CONFIRMED]);
+
+        // Mark patient as no longer new after first approved appointment
+        if ($appointment->patient) {
+            $appointment->patient->update(['new_patient' => false]);
+
+            $smsService->sendToPatient($appointment->patient, 'appointment_approved', [
+                'date' => $appointment->appointment_date->format('d/m/Y'),
+                'time' => $appointment->start_time?->format('H:i'),
+                'service' => $appointment->service?->name ?? 'dental service',
+            ]);
+        }
+
+        return redirect()->route('appointments.online')
+            ->with('status', 'Appointment approved and SMS notification sent to ' . ($appointment->patient?->phone ?? 'patient') . '.');
     }
 
     private function buildAppointment(array $validated, ?int $excludeId = null): array

@@ -29,6 +29,13 @@ class SmsTemplateSeeder extends Seeder
                 'is_active' => true,
             ],
             [
+                'name' => 'Uthibitisho wa Idhini ya Miadi',
+                'trigger' => 'appointment_approved',
+                'category' => 'dental',
+                'body' => 'Habari {{name}}, miadi yako tarehe {{date}} saa {{time}} katika Miravil Dental imeidhinishwa. Tutaonana! -MIRAVIL',
+                'is_active' => true,
+            ],
+            [
                 'name' => 'Kikumbusho cha Muda wa 24h',
                 'trigger' => 'reminder_24h',
                 'category' => 'dental',

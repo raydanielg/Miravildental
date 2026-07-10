@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClinicalRecordController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
@@ -16,11 +17,25 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
+| Landing page
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::post('/book-appointment', [LandingController::class, 'bookAppointment'])->name('landing.appointment.book');
+Route::get('/privacy-policy', [LandingController::class, 'privacy'])->name('landing.privacy');
+Route::get('/terms-of-service', [LandingController::class, 'terms'])->name('landing.terms');
+Route::get('/about-us', [LandingController::class, 'about'])->name('landing.about');
+Route::get('/our-services', [LandingController::class, 'services'])->name('landing.services');
+Route::get('/book-now', [LandingController::class, 'booking'])->name('landing.booking');
+Route::get('/contact-us', [LandingController::class, 'contact'])->name('landing.contact');
+
+/*
+|--------------------------------------------------------------------------
 | Authentication
 |--------------------------------------------------------------------------
 */
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/', [LoginController::class, 'login']);
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
 
 Auth::routes(['login' => false, 'middleware' => 'throttle:5,1']);
 
@@ -46,6 +61,8 @@ Route::middleware(['auth', 'role:admin,doctor,reception,customer'])->group(funct
     Route::resource('appointments', AppointmentController::class);
     Route::get('appointments/{appointment}/edit-form', [AppointmentController::class, 'editForm'])->name('appointments.edit-form');
     Route::post('appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])->name('appointments.status');
+    Route::get('appointments/online/list', [AppointmentController::class, 'online'])->name('appointments.online');
+    Route::post('appointments/{appointment}/approve', [AppointmentController::class, 'approve'])->name('appointments.approve');
     Route::get('appointments/{appointment}/clinical-record/create', [ClinicalRecordController::class, 'createFromAppointment'])->name('clinical-records.create-from-appointment');
 
     // Clinical / Treatment Records

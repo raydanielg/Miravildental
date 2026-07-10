@@ -99,10 +99,16 @@
             {{-- Appointments --}}
             @if($user->isAdmin() || $user->isReception() || $user->isDoctor())
             <div class="sidebar-group">
-                <a href="{{ route('appointments.index') }}" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-100 text-sm font-medium {{ request()->routeIs('appointments*') ? 'active' : '' }}">
+                <a href="{{ route('appointments.index') }}" class="sidebar-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-100 text-sm font-medium {{ request()->routeIs('appointments.index') || request()->routeIs('appointments.create') || request()->routeIs('appointments.edit') || request()->routeIs('appointments.show') ? 'active' : '' }}">
                     <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     <span>{{ $user->isDoctor() ? 'My Schedule' : 'Appointments' }}</span>
                 </a>
+                @if($user->isAdmin() || $user->isReception())
+                <a href="{{ route('appointments.online') }}" class="sidebar-link w-full flex items-center gap-3 px-3 py-2 pl-10 rounded-lg text-emerald-100 text-sm font-medium {{ request()->routeIs('appointments.online') ? 'active' : '' }}">
+                    <svg class="w-4 h-4 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <span>Online Bookings</span>
+                </a>
+                @endif
             </div>
             @endif
 
