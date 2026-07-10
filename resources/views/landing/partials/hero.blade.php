@@ -36,13 +36,17 @@
                 Experience breakthrough comprehensive and flexible dental care models at Miravil Specialised Dental Centre.
             </p>
 
-            <div class="flex flex-wrap items-center gap-4 mb-12">
-                <a href="{{ route('landing.booking') }}" class="inline-flex items-center justify-center gap-2 bg-white text-primary-800 px-6 md:px-8 py-4 rounded-sm font-bold hover:bg-primary-50 transition shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all">
-                    <i class="fa-regular fa-calendar-check"></i>
-                    Book Appointment
+            <div class="flex flex-nowrap items-center justify-start gap-3 md:gap-4 mb-12 overflow-x-auto pb-2">
+                <a href="{{ route('landing.booking') }}" class="group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-white to-primary-50 text-primary-800 px-4 md:px-8 py-3.5 md:py-4 rounded-sm font-bold text-sm md:text-base shadow-xl shadow-primary-900/20 hover:shadow-2xl hover:shadow-primary-900/30 hover:-translate-y-1 transition-all duration-300 flex-shrink-0">
+                    <span class="w-8 h-8 md:w-9 md:h-9 bg-primary-600 text-white rounded-full flex items-center justify-center group-hover:bg-primary-700 transition-colors">
+                        <i class="fa-regular fa-calendar-check text-sm"></i>
+                    </span>
+                    <span class="whitespace-nowrap">Book Appointment</span>
                 </a>
-                <a href="tel:+255789483550" class="inline-flex items-center justify-center gap-2 border-2 border-white/40 text-white px-6 md:px-8 py-4 rounded-sm font-semibold hover:bg-white/10 transition">
-                    <i class="fa-solid fa-phone"></i>
+                <a href="tel:+255789483550" class="group inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border-2 border-white/50 text-white px-4 md:px-8 py-3.5 md:py-4 rounded-sm font-semibold text-sm md:text-base hover:bg-white/20 hover:border-white/80 hover:-translate-y-1 transition-all duration-300 flex-shrink-0">
+                    <span class="w-8 h-8 md:w-9 md:h-9 bg-white/20 text-white rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                        <i class="fa-solid fa-phone text-sm"></i>
+                    </span>
                     <span class="whitespace-nowrap">+255 789 483 550</span>
                 </a>
             </div>
