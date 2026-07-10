@@ -43,8 +43,8 @@
     {{-- Structured Data --}}
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "Dentist",
+        "@@context": "https://schema.org",
+        "@@type": "Dentist",
         "name": "Miravil Specialised Dental Centre",
         "description": "Modern dental clinic in Mwanza, Tanzania offering advanced diagnostics and treatment of dental and oral disorders.",
         "url": "{{ url('/') }}",
@@ -53,7 +53,7 @@
         "telephone": "+255-753-188-852",
         "email": "info@miravildental.co.tz",
         "address": {
-            "@type": "PostalAddress",
+            "@@type": "PostalAddress",
             "streetAddress": "P.O BOX 2323, Buswelu",
             "addressLocality": "Mwanza",
             "addressCountry": "TZ"
@@ -239,6 +239,7 @@
             0% { transform: translateX(-50%); }
             100% { transform: translateX(0); }
         }
+
     </style>
 </head>
 <body class="font-sans text-slate-700 antialiased">
@@ -579,6 +580,19 @@
                 });
             });
         }
+
+        // Hide page preloader after load
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('page-preloader');
+            if (preloader) {
+                setTimeout(() => {
+                    preloader.classList.add('preloader-hidden');
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                    }, 700);
+                }, 1200);
+            }
+        });
     </script>
     @stack('scripts')
 </body>
