@@ -2,13 +2,13 @@
     {{-- Top header --}}
     <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-2.5 border-b border-slate-700/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm">
-                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6">
-                    <a href="tel:+255753188852" class="flex items-center gap-2 text-slate-300 hover:text-white transition">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
+                <div class="flex flex-wrap items-center justify-start gap-3 sm:gap-6">
+                    <a href="tel:+255753188852" class="flex items-center gap-1.5 sm:gap-2 text-slate-300 hover:text-white transition">
                         <i class="fa-solid fa-phone text-primary-400"></i>
-                        <span>+255 753 188 852</span>
+                        <span class="font-medium">+255 753 188 852</span>
                     </a>
-                    <a href="mailto:info@miravildental.co.tz" class="flex items-center gap-2 text-slate-300 hover:text-white transition">
+                    <a href="mailto:info@miravildental.co.tz" class="hidden sm:flex items-center gap-2 text-slate-300 hover:text-white transition">
                         <i class="fa-solid fa-envelope text-secondary-400"></i>
                         <span>info@miravildental.co.tz</span>
                     </a>
@@ -17,7 +17,7 @@
                         <span>Mon - Sun: 08:30 AM - 05:00 PM</span>
                     </span>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 sm:gap-4">
                     <span class="hidden sm:inline text-slate-400">Follow us:</span>
                     <div class="flex items-center gap-2">
                         <a href="#" class="w-7 h-7 rounded-sm bg-slate-700/50 hover:bg-primary-600 flex items-center justify-center text-slate-300 hover:text-white transition">

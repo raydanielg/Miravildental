@@ -36,14 +36,14 @@
                 Experience breakthrough comprehensive and flexible dental care models at Miravil Specialised Dental Centre.
             </p>
 
-            <div class="flex flex-col sm:flex-row gap-4 mb-12">
-                <a href="#appointment" class="inline-flex items-center justify-center gap-2 bg-white text-primary-800 px-8 py-4 rounded-sm font-bold hover:bg-primary-50 transition shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all">
+            <div class="flex flex-wrap items-center gap-4 mb-12">
+                <a href="{{ route('landing.booking') }}" class="inline-flex items-center justify-center gap-2 bg-white text-primary-800 px-6 md:px-8 py-4 rounded-sm font-bold hover:bg-primary-50 transition shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all">
                     <i class="fa-regular fa-calendar-check"></i>
                     Book Appointment
                 </a>
-                <a href="tel:+255789483550" class="inline-flex items-center justify-center gap-2 border-2 border-white/40 text-white px-8 py-4 rounded-sm font-semibold hover:bg-white/10 transition">
+                <a href="tel:+255789483550" class="inline-flex items-center justify-center gap-2 border-2 border-white/40 text-white px-6 md:px-8 py-4 rounded-sm font-semibold hover:bg-white/10 transition">
                     <i class="fa-solid fa-phone"></i>
-                    +255 789 483 550
+                    <span class="whitespace-nowrap">+255 789 483 550</span>
                 </a>
             </div>
 
