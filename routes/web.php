@@ -9,6 +9,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SmsController;
@@ -28,6 +29,10 @@ Route::get('/about-us', [LandingController::class, 'about'])->name('landing.abou
 Route::get('/our-services', [LandingController::class, 'services'])->name('landing.services');
 Route::get('/book-now', [LandingController::class, 'booking'])->name('landing.booking');
 Route::get('/contact-us', [LandingController::class, 'contact'])->name('landing.contact');
+Route::post('/subscribe-newsletter', [LandingController::class, 'subscribeNewsletter'])->name('landing.newsletter.subscribe');
+Route::get('/sitemap.xml', [SitemapController::class, 'xml'])->name('sitemap.xml');
+Route::get('/sitemap', [SitemapController::class, 'html'])->name('sitemap.html');
+Route::get('/rss.xml', [SitemapController::class, 'rss'])->name('rss.feed');
 
 /*
 |--------------------------------------------------------------------------

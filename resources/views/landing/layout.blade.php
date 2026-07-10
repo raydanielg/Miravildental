@@ -4,8 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Miravil Specialised Dental Centre') }}</title>
-    <meta name="description" content="Miravil Specialised Dental Centre - Advanced diagnostics and treatment of dental and oral disorders in Tanzania.">
+    <title>@yield('title', config('app.name', 'Miravil Specialised Dental Centre'))</title>
+    <meta name="description" content="@yield('meta_description', 'Miravil Specialised Dental Centre - Advanced diagnostics and treatment of dental and oral disorders in Mwanza, Tanzania. Book your appointment online.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'Miravil Dental, dental clinic Mwanza, dentist Tanzania, teeth whitening, root canal, orthodontics, dental care')">
+    <meta name="author" content="Miravil Specialised Dental Centre">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ URL::current() }}">
+
+    {{-- Favicon --}}
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('logo.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('logo.png') }}">
+    <meta name="msapplication-TileImage" content="{{ asset('logo.png') }}">
+
+    {{-- Open Graph / Facebook --}}
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@yield('title', config('app.name', 'Miravil Specialised Dental Centre'))">
+    <meta property="og:description" content="@yield('meta_description', 'Miravil Specialised Dental Centre - Advanced diagnostics and treatment of dental and oral disorders in Mwanza, Tanzania.')">
+    <meta property="og:url" content="{{ URL::current() }}">
+    <meta property="og:site_name" content="Miravil Specialised Dental Centre">
+    <meta property="og:image" content="@yield('og_image', asset('images.png'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Miravil Specialised Dental Centre">
+
+    {{-- Twitter --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', config('app.name', 'Miravil Specialised Dental Centre'))">
+    <meta name="twitter:description" content="@yield('meta_description', 'Miravil Specialised Dental Centre - Advanced diagnostics and treatment of dental and oral disorders in Mwanza, Tanzania.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('images.png'))">
+    <meta name="twitter:image:alt" content="Miravil Specialised Dental Centre">
+
+    {{-- Sitemap & RSS --}}
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ route('sitemap.xml') }}">
+    <link rel="alternate" type="application/rss+xml" title="Miravil Dental RSS Feed" href="{{ route('rss.feed') }}">
+
+    {{-- Structured Data --}}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Dentist",
+        "name": "Miravil Specialised Dental Centre",
+        "description": "Modern dental clinic in Mwanza, Tanzania offering advanced diagnostics and treatment of dental and oral disorders.",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('logo.png') }}",
+        "image": "{{ asset('logo.png') }}",
+        "telephone": "+255-753-188-852",
+        "email": "info@miravildental.co.tz",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "P.O BOX 2323, Buswelu",
+            "addressLocality": "Mwanza",
+            "addressCountry": "TZ"
+        },
+        "openingHours": "Mo-Su 08:30-17:00",
+        "sameAs": []
+    }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -396,6 +452,71 @@
                     });
                 });
             }
+        }
+
+        // Newsletter subscription form - AJAX with SweetAlert toast
+        const newsletterForm = document.getElementById('newsletter-form');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const submitBtn = document.getElementById('newsletter-submit');
+                const btnText = document.getElementById('newsletter-btn-text');
+                const messageEl = document.getElementById('newsletter-message');
+                const originalText = btnText.innerHTML;
+
+                submitBtn.disabled = true;
+                btnText.innerHTML = 'Subscribing...';
+                messageEl.classList.add('hidden');
+
+                const formData = new FormData(newsletterForm);
+
+                fetch(newsletterForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(response => response.json().catch(() => ({ success: false, message: 'Network error' })))
+                .then(data => {
+                    submitBtn.disabled = false;
+                    btnText.innerHTML = originalText;
+
+                    if (data.success) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                            background: '#f0fdf4',
+                            color: '#14532d',
+                            iconColor: '#16a34a'
+                        });
+                        newsletterForm.reset();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Subscription Failed',
+                            text: data.message || 'Please check your email and try again.',
+                            confirmButtonColor: '#9333ea'
+                        });
+                    }
+                })
+                .catch(error => {
+                    submitBtn.disabled = false;
+                    btnText.innerHTML = originalText;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Something went wrong. Please try again.',
+                        confirmButtonColor: '#9333ea'
+                    });
+                });
+            });
         }
 
         // Appointment section form - AJAX with SweetAlert toast

@@ -1,6 +1,9 @@
 @extends('landing.layout')
 
-@section('title', 'Terms of Service - Miravil Specialised Dental Centre')
+@section('title', 'Terms of Service | Miravil Specialised Dental Centre - Mwanza, Tanzania')
+@section('meta_description', 'Read the terms of service of Miravil Specialised Dental Centre. Learn about our booking, payment, and service policies.')
+@section('meta_keywords', 'Miravil Dental terms of service, dental clinic terms, appointment policy Tanzania')
+@section('og_image', asset('images.png'))
 
 @section('content')
 <section class="relative py-16 md:py-24 bg-gradient-to-b from-slate-50 to-white overflow-hidden">

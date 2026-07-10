@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewsletterAdminNotificationMail;
+use App\Mail\NewsletterWelcomeMail;
 use App\Models\Appointment;
 use App\Models\ClinicSetting;
+use App\Models\NewsletterSubscriber;
 use App\Models\Patient;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class LandingController extends Controller
 {
@@ -53,6 +57,36 @@ class LandingController extends Controller
     {
         $services = Service::where('is_active', true)->orderBy('name')->get();
         return view('landing.pages.contact', compact('services'));
+    }
+
+    public function subscribeNewsletter(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|max:255|unique:newsletter_subscribers,email',
+        ]);
+
+        $subscriber = NewsletterSubscriber::create([
+            'email' => $validated['email'],
+            'subscribed_at' => now(),
+        ]);
+
+        try {
+            Mail::to($subscriber->email)->send(new NewsletterWelcomeMail($subscriber));
+
+            $adminEmail = config('mail.admin_address', 'info@miravildental.co.tz');
+            Mail::to($adminEmail)->send(new NewsletterAdminNotificationMail($subscriber));
+        } catch (\Exception $e) {
+            // Email sending failed, but subscription is saved
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Thank you for subscribing to our newsletter!',
+            ]);
+        }
+
+        return redirect()->back()->with('newsletter_status', 'Thank you for subscribing to our newsletter!');
     }
 
     public function bookAppointment(Request $request)

@@ -1,6 +1,9 @@
 @extends('landing.layout')
 
-@section('title', 'Privacy Policy - Miravil Specialised Dental Centre')
+@section('title', 'Privacy Policy | Miravil Specialised Dental Centre - Mwanza, Tanzania')
+@section('meta_description', 'Read the privacy policy of Miravil Specialised Dental Centre. Learn how we protect your personal information and dental records.')
+@section('meta_keywords', 'Miravil Dental privacy policy, dental clinic privacy, patient data protection Tanzania')
+@section('og_image', asset('images.png'))
 
 @section('content')
 <section class="relative py-16 md:py-24 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
