@@ -44,7 +44,14 @@ class AppointmentController extends Controller
         $doctors = User::where('role', 'doctor')->get();
         $services = Service::where('is_active', true)->get();
         $rooms = Room::where('is_active', true)->get();
-        $preselectedPatient = $request->get('patient_id') ? Patient::find($request->get('patient_id')) : null;
+
+        $preselectedPatient = null;
+        if ($request->get('patient_id')) {
+            $preselectedPatient = Patient::find($request->get('patient_id'));
+        } elseif ($request->get('user_id')) {
+            $preselectedPatient = Patient::where('user_id', $request->get('user_id'))->first();
+        }
+
         $statuses = Appointment::STATUS_LABELS;
 
         return view('appointments.create', compact('patients', 'doctors', 'services', 'rooms', 'preselectedPatient', 'statuses'));

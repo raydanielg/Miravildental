@@ -96,6 +96,22 @@
                 </a>
             </div>
 
+            {{-- Team Chat --}}
+            @php
+                $unreadChatCount = \App\Models\ChatConversation::whereHas('participants', fn ($q) => $q->where('user_id', auth()->id()))
+                    ->get()
+                    ->sum(fn ($c) => $c->unreadCountFor(auth()->user()));
+            @endphp
+            <div class="sidebar-group">
+                <a href="{{ route('chat.index') }}" class="sidebar-link relative inline-flex items-center w-full gap-3 px-4 py-2.5 rounded-lg text-emerald-100 text-sm font-medium bg-emerald-500/20 border border-transparent hover:bg-emerald-500/30 focus:ring-4 focus:ring-emerald-500/30 shadow-sm {{ request()->routeIs('chat.*') ? 'active bg-emerald-500/30' : '' }}">
+                    <svg class="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                    <span>Messages</span>
+                    <div id="chatUnreadBadge" class="{{ $unreadChatCount > 0 ? '' : 'hidden' }} absolute inline-flex items-center justify-center min-w-[1.5rem] h-6 text-xs font-bold text-white bg-red-500 border-2 border-[#024938] rounded-full -top-2 -end-2 px-1 animate-pulse">
+                        {{ $unreadChatCount > 99 ? '99+' : $unreadChatCount }}
+                    </div>
+                </a>
+            </div>
+
             {{-- Appointments --}}
             @if($user->isAdmin() || $user->isReception() || $user->isDoctor())
             <div class="sidebar-group">
@@ -237,32 +253,136 @@
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search patients..." class="bg-transparent text-sm outline-none w-48 text-gray-600 placeholder-gray-400">
                 </form>
 
-                {{-- Notifications --}}
+                @php
+                    $todayAppointmentCount = \App\Models\Appointment::today()->whereIn('status', [\App\Models\Appointment::STATUS_BOOKED, \App\Models\Appointment::STATUS_CONFIRMED])->count();
+                    $onlineUsersCount = \App\Models\User::whereNotNull('last_seen_at')->where('last_seen_at', '>=', now()->subMinutes(2))->where('id', '!=', auth()->id())->count();
+                    $onlineUsers = \App\Models\User::whereNotNull('last_seen_at')->where('last_seen_at', '>=', now()->subMinutes(2))->where('id', '!=', auth()->id())->orderBy('name')->limit(5)->get();
+                    $headerUnreadCount = \App\Models\ChatConversation::whereHas('participants', fn ($q) => $q->where('user_id', auth()->id()))
+                        ->get()
+                        ->sum(fn ($c) => $c->unreadCountFor(auth()->user()));
+                    $totalNotifications = $todayAppointmentCount + $headerUnreadCount + $onlineUsersCount;
+                @endphp
+
+                {{-- Online Activity Shortcut --}}
                 <div class="relative">
-                    <button onclick="document.getElementById('notificationDropdown').classList.toggle('hidden')" class="relative p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                        @php
-                            $notificationCount = \App\Models\Appointment::today()->whereIn('status', [\App\Models\Appointment::STATUS_BOOKED, \App\Models\Appointment::STATUS_CONFIRMED])->count();
-                        @endphp
-                        @if($notificationCount > 0)
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-gold-500 rounded-full"></span>
+                    @php
+                        $activityCount = $onlineUsersCount + $todayAppointmentCount;
+                    @endphp
+                    <button onclick="document.getElementById('activityDropdown').classList.toggle('hidden')" class="relative w-10 h-10 rounded-full bg-gradient-to-br from-blue-50 to-white hover:from-blue-100 hover:to-blue-50 border border-blue-100 text-blue-700 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center group">
+                        <svg class="w-5 h-5 {{ $activityCount > 0 ? 'text-blue-600' : 'text-blue-400' }} group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        @if($activityCount > 0)
+                            <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full animate-ping"></span>
+                            <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] font-bold text-white">{{ $activityCount > 9 ? '9+' : $activityCount }}</span>
                         @endif
                     </button>
-                    <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-xl border border-gray-100 shadow-lg z-50 overflow-hidden">
-                        <div class="px-4 py-3 border-b border-gray-100">
-                            <p class="text-xs font-semibold text-gray-900">Notifications</p>
-                        </div>
-                        <div class="max-h-64 overflow-y-auto">
-                            @if($notificationCount > 0)
-                                <div class="px-4 py-3 border-b border-gray-50 hover:bg-gray-50">
-                                    <p class="text-xs text-gray-800 font-medium">Upcoming appointments today</p>
-                                    <p class="text-[10px] text-gray-500 mt-0.5">{{ $notificationCount }} patient(s) scheduled</p>
-                                </div>
-                            @else
-                                <div class="px-4 py-6 text-center text-xs text-gray-400">No new notifications</div>
+                    <div id="activityDropdown" class="hidden absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-sm rounded-2xl border border-blue-100 shadow-2xl z-50 overflow-hidden ring-1 ring-black/5">
+                        <div class="px-4 py-3 border-b border-blue-100 bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-[10px]">
+                                    <i class="fa-solid fa-users"></i>
+                                </span>
+                                <p class="text-xs font-bold text-white">Today's Activity</p>
+                            </div>
+                            @if($activityCount > 0)
+                                <span class="text-[10px] font-bold text-blue-700 bg-white px-2 py-0.5 rounded-full">{{ $activityCount }}</span>
                             @endif
                         </div>
-                        <a href="{{ route('appointments.index') }}" class="block px-4 py-2 text-[10px] font-medium text-emerald-600 hover:bg-emerald-50 text-center border-t border-gray-100">View all appointments</a>
+                        <div class="max-h-80 overflow-y-auto">
+                            @if($todayAppointmentCount > 0)
+                                <a href="{{ route('appointments.index') }}" class="group block px-4 py-3 border-b border-gray-50 hover:bg-blue-50 transition-all duration-200">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 flex items-center justify-center text-xs shadow-sm group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid fa-calendar-check"></i>
+                                        </span>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-gray-800 font-semibold group-hover:text-blue-700">Today's appointments</p>
+                                            <p class="text-[10px] text-gray-500 truncate">{{ $todayAppointmentCount }} patient(s) scheduled</p>
+                                        </div>
+                                        <span class="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-bold">{{ $todayAppointmentCount }}</span>
+                                    </div>
+                                </a>
+                            @endif
+                            @if($onlineUsersCount > 0)
+                                <div class="px-4 py-2 border-b border-blue-100 bg-gradient-to-r from-blue-50/50 to-transparent">
+                                    <p class="text-[10px] font-bold text-blue-700 uppercase tracking-wide flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                                        Online now ({{ $onlineUsersCount }})
+                                    </p>
+                                </div>
+                                @foreach($onlineUsers as $onlineUser)
+                                    <div class="flex items-center justify-between px-4 py-2.5 border-b border-gray-50 hover:bg-blue-50/50 transition-colors">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <span class="relative w-8 h-8 rounded-full bg-gradient-to-br from-slate-100 to-white text-slate-600 border border-slate-200 flex items-center justify-center text-[10px] font-bold shadow-sm">
+                                                {{ strtoupper(substr($onlineUser->name, 0, 2)) }}
+                                                <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
+                                            </span>
+                                            <p class="text-xs text-gray-800 font-medium truncate">{{ $onlineUser->name }}</p>
+                                        </div>
+                                        <span class="text-[10px] text-emerald-600 font-semibold whitespace-nowrap ml-2 flex items-center gap-1">
+                                            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                            Online
+                                        </span>
+                                    </div>
+                                @endforeach
+                            @endif
+                            @if($activityCount === 0)
+                                <div class="px-4 py-10 text-center">
+                                    <span class="w-12 h-12 rounded-full bg-gray-100 text-gray-300 flex items-center justify-center mx-auto mb-2 text-lg">
+                                        <i class="fa-solid fa-user-clock"></i>
+                                    </span>
+                                    <p class="text-xs text-gray-400">No activity today</p>
+                                </div>
+                            @endif
+                        </div>
+                        <a href="{{ route('chat.index') }}" class="block px-4 py-2.5 text-[10px] font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-center transition-colors">Open chat</a>
+                    </div>
+                </div>
+
+                {{-- Notifications --}}
+                <div class="relative">
+                    <button id="headerNotificationBtn" onclick="document.getElementById('notificationDropdown').classList.toggle('hidden')" class="relative w-10 h-10 rounded-full bg-gradient-to-br from-emerald-50 to-white hover:from-emerald-100 hover:to-emerald-50 border border-emerald-100 text-emerald-700 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center group">
+                        <svg class="w-5 h-5 {{ $headerUnreadCount > 0 ? 'text-gold-500' : 'text-emerald-600' }} group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                        @if($headerUnreadCount > 0)
+                            <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 border-2 border-white rounded-full animate-ping"></span>
+                            <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] font-bold text-white">{{ $headerUnreadCount > 9 ? '9+' : $headerUnreadCount }}</span>
+                        @endif
+                    </button>
+                    <div id="notificationDropdown" class="hidden absolute right-0 mt-3 w-80 bg-white/95 backdrop-blur-sm rounded-2xl border border-emerald-100 shadow-2xl z-50 overflow-hidden ring-1 ring-black/5">
+                        <div class="px-4 py-3 border-b border-emerald-100 bg-gradient-to-r from-emerald-600 to-emerald-700 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-[10px]">
+                                    <i class="fa-solid fa-bell"></i>
+                                </span>
+                                <p class="text-xs font-bold text-white">Notifications</p>
+                            </div>
+                            @if($headerUnreadCount > 0)
+                                <span class="text-[10px] font-bold text-emerald-700 bg-white px-2 py-0.5 rounded-full">{{ $headerUnreadCount }}</span>
+                            @endif
+                        </div>
+                        <div class="max-h-80 overflow-y-auto">
+                            @if($headerUnreadCount > 0)
+                                <a href="{{ route('chat.index') }}" class="group block px-4 py-3 border-b border-gray-50 hover:bg-emerald-50 transition-all duration-200">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-50 text-emerald-600 flex items-center justify-center text-xs shadow-sm group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid fa-message"></i>
+                                        </span>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-gray-800 font-semibold group-hover:text-emerald-700">Unread messages</p>
+                                            <p class="text-[10px] text-gray-500 truncate">{{ $headerUnreadCount }} new message{{ $headerUnreadCount > 1 ? 's' : '' }}</p>
+                                        </div>
+                                        <span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">{{ $headerUnreadCount }}</span>
+                                    </div>
+                                </a>
+                            @else
+                                <div class="px-4 py-10 text-center">
+                                    <span class="w-12 h-12 rounded-full bg-gray-100 text-gray-300 flex items-center justify-center mx-auto mb-2 text-lg">
+                                        <i class="fa-regular fa-bell-slash"></i>
+                                    </span>
+                                    <p class="text-xs text-gray-400">No new notifications</p>
+                                </div>
+                            @endif
+                        </div>
+                        <a href="{{ route('chat.index') }}" class="block px-4 py-2.5 text-[10px] font-bold text-white bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-center transition-colors">Open chat</a>
                     </div>
                 </div>
             </div>
@@ -354,6 +474,44 @@
                     Toast.fire({ icon: 'error', title: '{{ $error }}' });
                 @endforeach
             @endif
+        })();
+    </script>
+    <script>
+        (function() {
+            const badge = document.getElementById('chatUnreadBadge');
+            if (!badge) return;
+
+            let lastCount = parseInt(badge.textContent.trim()) || 0;
+
+            function updateBadge(count) {
+                const hasUnread = count > 0;
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.classList.toggle('hidden', !hasUnread);
+
+                if (hasUnread && count !== lastCount) {
+                    badge.classList.remove('animate-pulse');
+                    void badge.offsetWidth; // reflow
+                    badge.classList.add('animate-pulse', 'animate-bounce');
+                    setTimeout(() => badge.classList.remove('animate-bounce'), 1000);
+                }
+                lastCount = count;
+            }
+
+            async function fetchUnreadCount() {
+                try {
+                    const res = await fetch('{{ route('chat.unread-count') }}', {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    updateBadge(data.unread_count || 0);
+                } catch (e) {
+                    console.error('Unread count fetch error', e);
+                }
+            }
+
+            fetchUnreadCount();
+            setInterval(fetchUnreadCount, 10000);
         })();
     </script>
     @stack('scripts')

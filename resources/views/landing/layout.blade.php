@@ -63,9 +63,8 @@
     }
     </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=Nunito:400,500,600,700,800,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -74,7 +73,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
                     },
                     colors: {
                         primary: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d' },
@@ -242,7 +241,7 @@
 
     </style>
 </head>
-<body class="font-sans text-slate-700 antialiased">
+<body class="font-['Nunito',sans-serif] text-slate-700 antialiased">
 
     @include('landing.partials.header')
 
@@ -251,6 +250,27 @@
     </main>
 
     @include('landing.partials.footer')
+
+    {{-- Floating WhatsApp --}}
+    <a href="https://wa.me/255753188852?text=Hello%20Miravil%20Specialised%20Dental%20Centre%2C%20I%20would%20like%20to%20book%20an%20appointment."
+       target="_blank"
+       rel="noopener noreferrer"
+       class="fixed bottom-5 right-5 md:bottom-8 md:right-8 z-50 group"
+       aria-label="Chat on WhatsApp">
+        {{-- Ripple rings --}}
+        <span class="absolute inset-0 rounded-full bg-green-500 opacity-40 animate-ping"></span>
+        <span class="absolute inset-0 rounded-full bg-green-500 opacity-20 animate-pulse scale-125"></span>
+
+        {{-- Tooltip --}}
+        <span class="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg">
+            Chat on WhatsApp
+        </span>
+
+        {{-- Button --}}
+        <span class="relative flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full shadow-2xl shadow-green-500/40 hover:scale-110 hover:rotate-3 transition-transform duration-300 animate-bounce">
+            <i class="fa-brands fa-whatsapp text-white text-2xl md:text-3xl"></i>
+        </span>
+    </a>
 
     <script>
         const nav = document.getElementById('main-nav');
@@ -580,19 +600,6 @@
                 });
             });
         }
-
-        // Hide page preloader after load
-        window.addEventListener('load', function() {
-            const preloader = document.getElementById('page-preloader');
-            if (preloader) {
-                setTimeout(() => {
-                    preloader.classList.add('preloader-hidden');
-                    setTimeout(() => {
-                        preloader.style.display = 'none';
-                    }, 700);
-                }, 1200);
-            }
-        });
     </script>
     @stack('scripts')
 </body>

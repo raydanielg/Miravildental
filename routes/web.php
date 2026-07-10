@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SitemapController;
@@ -21,7 +22,10 @@ use Illuminate\Support\Facades\Route;
 | Landing page
 |--------------------------------------------------------------------------
 */
-Route::get('/', [LandingController::class, 'index'])->name('landing');
+// Landing page temporarily disabled; redirect to login
+Route::get('/', function () {
+    return redirect()->route('login');
+})->name('landing');
 Route::post('/book-appointment', [LandingController::class, 'bookAppointment'])->name('landing.appointment.book');
 Route::get('/privacy-policy', [LandingController::class, 'privacy'])->name('landing.privacy');
 Route::get('/terms-of-service', [LandingController::class, 'terms'])->name('landing.terms');
@@ -54,6 +58,20 @@ Route::get('/home', fn () => redirect()->route('dashboard'));
 Route::middleware(['auth', 'role:admin,doctor,reception,customer'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Team Chat
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::post('/chat', [ChatController::class, 'store'])->name('chat.store');
+    Route::post('/chat/ajax/start', [ChatController::class, 'ajaxStart'])->name('chat.ajax.start');
+    Route::get('/chat/{conversation}/ajax', [ChatController::class, 'ajaxLoad'])->name('chat.ajax.load');
+    Route::get('/chat/{conversation}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{conversation}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/{conversation}/voice', [ChatController::class, 'storeVoice'])->name('chat.voice');
+    Route::post('/chat/{conversation}/file', [ChatController::class, 'storeFile'])->name('chat.file');
+    Route::post('/chat/{conversation}/gallery', [ChatController::class, 'storeGallery'])->name('chat.gallery');
+    Route::get('/chat/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
+    Route::post('/chat/heartbeat', [ChatController::class, 'heartbeat'])->name('chat.heartbeat');
+    Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unread-count');
 
     // Patients
     Route::resource('patients', PatientController::class);
