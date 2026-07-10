@@ -52,10 +52,10 @@
             </div>
 
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                <div class="flex -space-x-3">
-                    <img src="https://ui-avatars.com/api/?name=Doctor+A&bg=16a34a&color=fff" class="w-12 h-12 rounded-full border-2 border-white" alt="Doctor">
-                    <img src="https://ui-avatars.com/api/?name=Doctor+B&bg=9333ea&color=fff" class="w-12 h-12 rounded-full border-2 border-white" alt="Doctor">
-                    <img src="https://ui-avatars.com/api/?name=Doctor+C&bg=22c55e&color=fff" class="w-12 h-12 rounded-full border-2 border-white" alt="Doctor">
+                <div class="flex -space-x-3 avatar-group">
+                    <img data-avatar="0" src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=100&h=100&q=80" class="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-white object-cover shadow-lg hover:scale-110 hover:z-10 transition-all duration-300" alt="Doctor">
+                    <img data-avatar="1" src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=100&h=100&q=80" class="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-white object-cover shadow-lg hover:scale-110 hover:z-10 transition-all duration-300" alt="Doctor">
+                    <img data-avatar="2" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=100&h=100&q=80" class="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-white object-cover shadow-lg hover:scale-110 hover:z-10 transition-all duration-300" alt="Doctor">
                 </div>
                 <div>
                     <div class="flex items-center gap-1 text-yellow-300 text-sm mb-1">
@@ -81,3 +81,45 @@
         <button class="hero-dot w-8 h-1.5 rounded-sm bg-white/40 transition-all duration-300" data-index="4"></button>
     </div>
 </section>
+
+@push('scripts')
+<script>
+    (function() {
+        const avatarSets = [
+            [
+                'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=100&h=100&q=80',
+                'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=100&h=100&q=80',
+                'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=100&h=100&q=80'
+            ],
+            [
+                'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=100&h=100&q=80',
+                'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=100&h=100&q=80',
+                'https://images.unsplash.com/photo-1614608682850-e0d6d316b166?auto=format&fit=crop&w=100&h=100&q=80'
+            ],
+            [
+                'https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&w=100&h=100&q=80',
+                'https://images.unsplash.com/photo-1582750433449-648ed127bb57?auto=format&fit=crop&w=100&h=100&q=80',
+                'https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=100&h=100&q=80'
+            ]
+        ];
+
+        const avatars = document.querySelectorAll('[data-avatar]');
+        if (avatars.length === 0) return;
+
+        let currentSet = 0;
+
+        setInterval(() => {
+            currentSet = (currentSet + 1) % avatarSets.length;
+            avatars.forEach((img, index) => {
+                img.style.opacity = '0.5';
+                img.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    img.src = avatarSets[currentSet][index];
+                    img.style.opacity = '1';
+                    img.style.transform = 'scale(1)';
+                }, 250);
+            });
+        }, 4000);
+    })();
+</script>
+@endpush

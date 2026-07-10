@@ -41,11 +41,11 @@
                     Quick Links
                 </h4>
                 <ul class="space-y-3 text-sm">
-                    <li><a href="#home" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> Home</a></li>
-                    <li><a href="#about" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> About Us</a></li>
-                    <li><a href="#services" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> Services</a></li>
-                    <li><a href="#appointment" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> Book Now</a></li>
-                    <li><a href="#contact" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> Contact Us</a></li>
+                    <li><a href="{{ route('landing') }}" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> Home</a></li>
+                    <li><a href="{{ route('landing.about') }}" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> About Us</a></li>
+                    <li><a href="{{ route('landing.services') }}" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> Services</a></li>
+                    <li><a href="{{ route('landing.booking') }}" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> Book Now</a></li>
+                    <li><a href="{{ route('landing.contact') }}" class="footer-link inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors"><span class="w-1.5 h-1.5 bg-secondary-500 rounded-sm opacity-0 -ml-3.5 link-dot transition-opacity"></span> Contact Us</a></li>
                 </ul>
             </div>
 

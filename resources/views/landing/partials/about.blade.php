@@ -42,7 +42,7 @@
                 </div>
 
                 {{-- Floating stats cards --}}
-                <div class="absolute -bottom-8 -right-4 md:right-8 bg-white rounded-sm shadow-xl p-5 z-20 max-w-[200px] section-reveal" style="transition-delay: 300ms;">
+                <div class="absolute -bottom-8 right-2 md:-right-4 lg:right-8 bg-white rounded-sm shadow-xl p-4 md:p-5 z-20 max-w-[160px] md:max-w-[200px] section-reveal" style="transition-delay: 300ms;">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-sm flex items-center justify-center text-white text-xl shadow-lg">
                             <i class="fa-solid fa-award"></i>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
 
-                <div class="absolute -top-4 -right-4 md:right-8 bg-white rounded-sm shadow-xl p-4 z-20 section-reveal" style="transition-delay: 400ms;">
+                <div class="absolute -top-4 right-2 md:-right-4 lg:right-8 bg-white rounded-sm shadow-xl p-3 md:p-4 z-20 section-reveal" style="transition-delay: 400ms;">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-secondary-500 to-secondary-700 rounded-sm flex items-center justify-center text-white shadow-lg">
                             <i class="fa-solid fa-heart-pulse"></i>
@@ -82,7 +82,7 @@
                     We offer comprehensive services from all fields of dentistry. In addition to high-end dental equipment, all services are provided in a comfortable, luxurious environment. New patients are welcomed with a complimentary oral health consultation.
                 </p>
 
-                <div class="grid sm:grid-cols-2 gap-4 pt-2">
+                <div class="grid grid-cols-2 gap-3 md:gap-4 pt-2">
                     <div class="flex items-start gap-3 p-3 bg-white rounded-sm border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
                         <span class="w-8 h-8 bg-primary-100 text-primary-700 rounded-sm flex items-center justify-center shrink-0 mt-0.5">
                             <i class="fa-solid fa-check text-xs"></i>

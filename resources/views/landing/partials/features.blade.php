@@ -39,98 +39,98 @@
             <p class="text-slate-600 mt-5 text-lg">Breakthrough in Comprehensive, Flexible Dental Care Models</p>
         </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
             {{-- Feature 1 --}}
-            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-8 relative overflow-hidden section-reveal" style="transition-delay: 0ms;">
+            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-8 relative overflow-hidden section-reveal" style="transition-delay: 0ms;">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-2xl shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4 md:mb-6">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
-                        <span class="text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">01</span>
+                        <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">01</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-primary-600 transition-colors">Tooth Protection</h3>
+                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-primary-600 transition-colors">Tooth Protection</h3>
                     <p class="text-slate-600 leading-relaxed text-sm">Prevent enamel loss and keep teeth healthy with daily brushing, flossing, and regular six-month checkups.</p>
                 </div>
                 <div class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 group-hover:w-full transition-all duration-500"></div>
             </div>
 
             {{-- Feature 2 --}}
-            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-8 relative overflow-hidden section-reveal" style="transition-delay: 100ms;">
+            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-8 relative overflow-hidden section-reveal" style="transition-delay: 100ms;">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-14 h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-2xl shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4 md:mb-6">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                         </div>
-                        <span class="text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">02</span>
+                        <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">02</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-secondary-600 transition-colors">Teeth Whitening</h3>
+                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-secondary-600 transition-colors">Teeth Whitening</h3>
                     <p class="text-slate-600 leading-relaxed text-sm">A bright smile boosts confidence. Our safe whitening treatments give you a healthier, more radiant look.</p>
                 </div>
                 <div class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-secondary-500 to-primary-500 group-hover:w-full transition-all duration-500"></div>
             </div>
 
             {{-- Feature 3 --}}
-            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-8 relative overflow-hidden section-reveal" style="transition-delay: 200ms;">
+            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-8 relative overflow-hidden section-reveal" style="transition-delay: 200ms;">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-2xl shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4 md:mb-6">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                             <i class="fa-solid fa-gem"></i>
                         </div>
-                        <span class="text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">03</span>
+                        <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">03</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-primary-600 transition-colors">Cosmetic Dentistry</h3>
+                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-primary-600 transition-colors">Cosmetic Dentistry</h3>
                     <p class="text-slate-600 leading-relaxed text-sm">From veneers to bonding, we enhance your smile using modern cosmetic techniques tailored to your face.</p>
                 </div>
                 <div class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 group-hover:w-full transition-all duration-500"></div>
             </div>
 
             {{-- Feature 4 --}}
-            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-8 relative overflow-hidden section-reveal" style="transition-delay: 0ms;">
+            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-8 relative overflow-hidden section-reveal" style="transition-delay: 0ms;">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-14 h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-2xl shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4 md:mb-6">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                             <i class="fa-solid fa-user-doctor"></i>
                         </div>
-                        <span class="text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">04</span>
+                        <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">04</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-secondary-600 transition-colors">Expert Doctors</h3>
+                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-secondary-600 transition-colors">Expert Doctors</h3>
                     <p class="text-slate-600 leading-relaxed text-sm">Our team of 12+ professional dentists brings years of experience and compassionate care to every patient.</p>
                 </div>
                 <div class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-secondary-500 to-primary-500 group-hover:w-full transition-all duration-500"></div>
             </div>
 
             {{-- Feature 5 --}}
-            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-8 relative overflow-hidden section-reveal" style="transition-delay: 100ms;">
+            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-8 relative overflow-hidden section-reveal" style="transition-delay: 100ms;">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-2xl shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4 md:mb-6">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                             <i class="fa-solid fa-hospital"></i>
                         </div>
-                        <span class="text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">05</span>
+                        <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">05</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-primary-600 transition-colors">Modern Equipment</h3>
+                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-primary-600 transition-colors">Modern Equipment</h3>
                     <p class="text-slate-600 leading-relaxed text-sm">High-end dental technology and a luxurious, comfortable environment for the best treatment experience.</p>
                 </div>
                 <div class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 group-hover:w-full transition-all duration-500"></div>
             </div>
 
             {{-- Feature 6 --}}
-            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-8 relative overflow-hidden section-reveal" style="transition-delay: 200ms;">
+            <div class="feature-card group bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-8 relative overflow-hidden section-reveal" style="transition-delay: 200ms;">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="w-14 h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-2xl shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4 md:mb-6">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                             <i class="fa-solid fa-headset"></i>
                         </div>
-                        <span class="text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">06</span>
+                        <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">06</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-secondary-600 transition-colors">24/7 Support</h3>
+                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-secondary-600 transition-colors">24/7 Support</h3>
                     <p class="text-slate-600 leading-relaxed text-sm">Flexible appointments, online booking, and responsive support to address your dental needs anytime.</p>
                 </div>
                 <div class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-secondary-500 to-primary-500 group-hover:w-full transition-all duration-500"></div>

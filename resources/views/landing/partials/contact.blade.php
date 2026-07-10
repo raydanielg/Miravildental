@@ -23,38 +23,38 @@
         </div>
 
         {{-- Contact cards --}}
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            <div class="contact-card bg-white rounded-sm shadow-lg border border-slate-100 p-6 text-center group section-reveal" style="transition-delay: 0ms;">
-                <div class="w-14 h-14 mx-auto bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-primary-500/20">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16">
+            <div class="contact-card bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-6 text-center group section-reveal" style="transition-delay: 0ms;">
+                <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl mb-3 md:mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-primary-500/20">
                     <i class="fa-solid fa-location-dot"></i>
                 </div>
-                <h4 class="font-bold text-slate-900 mb-1">Our Address</h4>
-                <p class="text-sm text-slate-600">P.O BOX 2323<br>Buswelu Mwanza</p>
+                <h4 class="font-bold text-slate-900 mb-1 text-sm md:text-base">Our Address</h4>
+                <p class="text-xs md:text-sm text-slate-600">P.O BOX 2323<br>Buswelu Mwanza</p>
             </div>
 
-            <div class="contact-card bg-white rounded-sm shadow-lg border border-slate-100 p-6 text-center group section-reveal" style="transition-delay: 100ms;">
-                <div class="w-14 h-14 mx-auto bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-secondary-500/20">
+            <div class="contact-card bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-6 text-center group section-reveal" style="transition-delay: 100ms;">
+                <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl mb-3 md:mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-secondary-500/20">
                     <i class="fa-solid fa-envelope"></i>
                 </div>
-                <h4 class="font-bold text-slate-900 mb-1">Email Us</h4>
-                <a href="mailto:info@miravildental.co.tz" class="text-sm text-primary-600 hover:text-primary-700 hover:underline font-medium break-all">info@miravildental.co.tz</a>
+                <h4 class="font-bold text-slate-900 mb-1 text-sm md:text-base">Email Us</h4>
+                <a href="mailto:info@miravildental.co.tz" class="text-xs md:text-sm text-primary-600 hover:text-primary-700 hover:underline font-medium break-all">info@miravildental.co.tz</a>
             </div>
 
-            <div class="contact-card bg-white rounded-sm shadow-lg border border-slate-100 p-6 text-center group section-reveal" style="transition-delay: 200ms;">
-                <div class="w-14 h-14 mx-auto bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-primary-500/20">
+            <div class="contact-card bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-6 text-center group section-reveal" style="transition-delay: 200ms;">
+                <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl mb-3 md:mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-primary-500/20">
                     <i class="fa-solid fa-phone"></i>
                 </div>
-                <h4 class="font-bold text-slate-900 mb-1">Call Us</h4>
-                <a href="tel:+255753188852" class="block text-sm text-primary-600 hover:text-primary-700 hover:underline font-medium">+255 753 188 852</a>
-                <a href="tel:+255789483550" class="block text-sm text-primary-600 hover:text-primary-700 hover:underline font-medium">+255 789 483 550</a>
+                <h4 class="font-bold text-slate-900 mb-1 text-sm md:text-base">Call Us</h4>
+                <a href="tel:+255753188852" class="block text-xs md:text-sm text-primary-600 hover:text-primary-700 hover:underline font-medium">+255 753 188 852</a>
+                <a href="tel:+255789483550" class="block text-xs md:text-sm text-primary-600 hover:text-primary-700 hover:underline font-medium">+255 789 483 550</a>
             </div>
 
-            <div class="contact-card bg-white rounded-sm shadow-lg border border-slate-100 p-6 text-center group section-reveal" style="transition-delay: 300ms;">
-                <div class="w-14 h-14 mx-auto bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-secondary-500/20">
+            <div class="contact-card bg-white rounded-sm shadow-lg border border-slate-100 p-4 md:p-6 text-center group section-reveal" style="transition-delay: 300ms;">
+                <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl mb-3 md:mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-secondary-500/20">
                     <i class="fa-regular fa-clock"></i>
                 </div>
-                <h4 class="font-bold text-slate-900 mb-1">Opening Hours</h4>
-                <p class="text-sm text-slate-600">Monday – Sunday<br>08:30 am – 05:00 pm</p>
+                <h4 class="font-bold text-slate-900 mb-1 text-sm md:text-base">Opening Hours</h4>
+                <p class="text-xs md:text-sm text-slate-600">Mon - Sun<br>08:30 - 17:00</p>
             </div>
         </div>
 
