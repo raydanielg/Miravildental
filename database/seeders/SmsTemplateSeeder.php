@@ -15,6 +15,13 @@ class SmsTemplateSeeder extends Seeder
     {
         $templates = [
             [
+                'name' => 'Ujumbe wa Kukaribisha Mgonjwa',
+                'trigger' => 'welcome',
+                'category' => 'registration',
+                'body' => 'Habari {{name}}, tunakukaribisha katika {{clinic_name}}. Tumepokea usajili wako (Namba ya file: {{file_number}}). Kwa mawasiliano zaidi piga {{clinic_phone}}. -MIRAVIL',
+                'is_active' => true,
+            ],
+            [
                 'name' => 'Uthibitisho wa Miadi',
                 'trigger' => 'booking_confirmation',
                 'category' => 'dental',

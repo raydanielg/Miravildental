@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Patient;
 use App\Models\SmsLog;
 use App\Models\SmsTemplate;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 
 class SmsController extends Controller
@@ -75,14 +76,13 @@ class SmsController extends Controller
         $sent = 0;
 
         foreach ($patients as $patient) {
-            SmsLog::create([
-                'patient_id' => $patient->id,
-                'phone' => $patient->phone,
-                'message' => $validated['message'],
-                'trigger' => 'campaign',
-                'status' => 'sent',
-                'sent_by' => auth()->id(),
-            ]);
+            app(SmsService::class)->sendRaw(
+                $patient->phone,
+                $validated['message'],
+                $patient,
+                'campaign',
+                auth()->id()
+            );
             $sent++;
         }
 
@@ -110,18 +110,15 @@ class SmsController extends Controller
             'appointment_id' => 'nullable|exists:appointments,id',
         ]);
 
-        $log = SmsLog::create([
-            'patient_id' => $validated['patient_id'] ?? null,
-            'appointment_id' => $validated['appointment_id'] ?? null,
-            'phone' => $validated['phone'],
-            'message' => $validated['message'],
-            'trigger' => 'manual',
-            'status' => 'sent',
-            'sent_by' => auth()->id(),
-        ]);
+        $patient = ! empty($validated['patient_id']) ? Patient::find($validated['patient_id']) : null;
 
-        // TODO: integrate actual SMS provider here
-        // $this->sendViaProvider($log);
+        $log = app(SmsService::class)->sendRaw(
+            $validated['phone'],
+            $validated['message'],
+            $patient,
+            'manual',
+            auth()->id()
+        );
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -148,13 +145,13 @@ class SmsController extends Controller
             'message' => 'required|string|max:1600',
         ]);
 
-        $log = SmsLog::create([
-            'phone' => $validated['phone'],
-            'message' => $validated['message'],
-            'trigger' => 'test',
-            'status' => 'sent',
-            'sent_by' => auth()->id(),
-        ]);
+        $log = app(SmsService::class)->sendRaw(
+            $validated['phone'],
+            $validated['message'],
+            null,
+            'test',
+            auth()->id()
+        );
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([

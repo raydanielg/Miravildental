@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\SmsService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -63,5 +64,14 @@ class Patient extends Model
     public function latestAppointment()
     {
         return $this->hasOne(Appointment::class)->latest('appointment_date');
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (Patient $patient) {
+            if ($patient->phone) {
+                app(SmsService::class)->sendWelcome($patient);
+            }
+        });
     }
 }
