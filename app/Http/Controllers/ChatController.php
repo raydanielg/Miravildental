@@ -389,6 +389,51 @@ class ChatController extends Controller
         return response()->json(['unread_count' => $count]);
     }
 
+    public function latestMessages(Request $request)
+    {
+        $user = Auth::user();
+        $sinceId = (int) $request->input('since_id', 0);
+
+        $conversations = ChatConversation::whereHas('participants', fn ($q) => $q->where('user_id', $user->id))
+            ->with('participants.user')
+            ->get();
+
+        $messages = collect();
+        foreach ($conversations as $conv) {
+            $otherUser = $conv->participants->first(fn ($p) => $p->user_id !== $user->id)?->user;
+            if (!$otherUser) continue;
+
+            $msgs = $conv->messages()
+                ->where('user_id', '!=', $user->id)
+                ->where('id', '>', $sinceId)
+                ->orderBy('id', 'desc')
+                ->limit(3)
+                ->get();
+
+            foreach ($msgs as $msg) {
+                $messages->push([
+                    'id' => $msg->id,
+                    'conversation_id' => $conv->id,
+                    'user_name' => $otherUser->name,
+                    'user_avatar' => strtoupper(substr($otherUser->name, 0, 2)),
+                    'body' => $msg->audio_path ? 'Voice message'
+                        : ($msg->file_path ? 'File: ' . $msg->file_name
+                        : ($msg->gallery_paths ? 'Photo gallery'
+                        : $msg->body)),
+                    'created_at' => $msg->created_at->diffForHumans(),
+                ]);
+            }
+        }
+
+        $messages = $messages->sortBy('id')->values();
+
+        return response()->json([
+            'messages' => $messages,
+            'max_id' => $messages->max('id') ?? $sinceId,
+            'unread_count' => $conversations->sum(fn ($c) => $c->unreadCountFor($user)),
+        ]);
+    }
+
     public function poll(ChatConversation $conversation)
     {
         $this->authorizeAccess($conversation);

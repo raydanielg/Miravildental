@@ -70,6 +70,7 @@ Route::middleware(['auth', 'role:admin,doctor,reception,customer'])->group(funct
     Route::get('/chat/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
     Route::post('/chat/heartbeat', [ChatController::class, 'heartbeat'])->name('chat.heartbeat');
     Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unread-count');
+    Route::get('/chat/latest-messages', [ChatController::class, 'latestMessages'])->name('chat.latest-messages');
 
     // Patients
     Route::resource('patients', PatientController::class);

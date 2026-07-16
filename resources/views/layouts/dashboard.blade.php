@@ -66,6 +66,28 @@
         ::-webkit-scrollbar-track { background: #01241f; }
         ::-webkit-scrollbar-thumb { background: #024938; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #f9ac00; }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(120%) scale(0.9); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0) scale(1); }
+            to { opacity: 0; transform: translateX(120%) scale(0.9); }
+        }
+        .toast-item {
+            opacity: 0;
+            transform: translateX(120%) scale(0.9);
+        }
+        .toast-item.toast-show {
+            animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .toast-item.toast-hide {
+            animation: toastOut 0.4s ease-in forwards;
+        }
+        .toast-item:hover {
+            transform: scale(1.02);
+        }
     </style>
 </head>
 <body class="font-['Nunito',sans-serif] antialiased bg-gray-50 text-slate-800">
@@ -479,41 +501,103 @@
     <script>
         (function() {
             const badge = document.getElementById('chatUnreadBadge');
-            if (!badge) return;
+            const notifAudio = new Audio('{{ asset("notification_message-best-notification-1-286672.mp3") }}');
+            let lastMaxId = 0;
+            let lastUnreadCount = {{ $headerUnreadCount ?? 0 }};
 
-            let lastCount = parseInt(badge.textContent.trim()) || 0;
+            function showToast(msg) {
+                const container = document.getElementById('toastContainer');
+                if (!container) return;
+
+                const toast = document.createElement('div');
+                toast.className = 'toast-item pointer-events-auto bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden max-w-sm w-full cursor-pointer hover:shadow-3xl transition-all duration-300';
+                toast.innerHTML = `
+                    <div class="flex items-stretch">
+                        <div class="w-1.5 bg-gradient-to-b from-emerald-400 to-emerald-600"></div>
+                        <div class="flex items-start gap-3 p-3.5 flex-1 min-w-0">
+                            <div class="relative shrink-0">
+                                <div class="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-50 border border-emerald-200 flex items-center justify-center text-sm font-bold text-emerald-700 shadow-sm">
+                                    ${msg.user_avatar}
+                                </div>
+                                <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="text-sm font-bold text-slate-800 truncate">${msg.user_name}</p>
+                                    <span class="text-[10px] text-slate-400 whitespace-nowrap shrink-0">${msg.created_at}</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5 line-clamp-2 leading-relaxed">${msg.body}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                toast.addEventListener('click', () => {
+                    window.location.href = '{{ route("chat.index") }}';
+                });
+
+                container.appendChild(toast);
+
+                requestAnimationFrame(() => {
+                    toast.classList.add('toast-show');
+                });
+
+                setTimeout(() => {
+                    toast.classList.remove('toast-show');
+                    toast.classList.add('toast-hide');
+                    setTimeout(() => toast.remove(), 400);
+                }, 5000);
+            }
 
             function updateBadge(count) {
+                if (!badge) return;
                 const hasUnread = count > 0;
                 badge.textContent = count > 99 ? '99+' : count;
                 badge.classList.toggle('hidden', !hasUnread);
 
-                if (hasUnread && count !== lastCount) {
+                if (hasUnread && count !== lastUnreadCount) {
                     badge.classList.remove('animate-pulse');
-                    void badge.offsetWidth; // reflow
+                    void badge.offsetWidth;
                     badge.classList.add('animate-pulse', 'animate-bounce');
                     setTimeout(() => badge.classList.remove('animate-bounce'), 1000);
                 }
-                lastCount = count;
+                lastUnreadCount = count;
             }
 
-            async function fetchUnreadCount() {
+            async function fetchLatestMessages() {
                 try {
-                    const res = await fetch('{{ route('chat.unread-count') }}', {
+                    const res = await fetch('{{ route("chat.latest-messages") }}?since_id=' + lastMaxId, {
                         headers: { 'X-Requested-With': 'XMLHttpRequest' }
                     });
                     if (!res.ok) return;
                     const data = await res.json();
+
+                    if (data.max_id > lastMaxId) lastMaxId = data.max_id;
+
+                    if (data.messages && data.messages.length > 0) {
+                        notifAudio.currentTime = 0;
+                        notifAudio.play().catch(() => {});
+                        data.messages.forEach((msg, i) => {
+                            setTimeout(() => showToast(msg), i * 600);
+                        });
+                    }
+
                     updateBadge(data.unread_count || 0);
                 } catch (e) {
-                    console.error('Unread count fetch error', e);
+                    console.error('Latest messages fetch error', e);
                 }
             }
 
-            fetchUnreadCount();
-            setInterval(fetchUnreadCount, 10000);
+            fetchLatestMessages();
+            setInterval(fetchLatestMessages, 8000);
         })();
     </script>
+
+    {{-- Toast Notification Container --}}
+    <div id="toastContainer" class="fixed top-20 right-4 z-[200] flex flex-col gap-3 pointer-events-none">
+        {{-- Toasts injected here --}}
+    </div>
+
     @stack('scripts')
 </body>
 </html>
