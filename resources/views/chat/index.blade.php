@@ -876,14 +876,18 @@
             if (!res.ok) return;
             const data = await res.json();
             let hasNew = false;
+            let hasNewFromOther = false;
             data.messages.forEach(msg => {
                 if (msg.id > lastId) lastId = msg.id;
                 if (!document.querySelector(`.message-item[data-id="${msg.id}"]`)) {
                     appendMessage(msg, msg.user_id === {{ auth()->id() }});
                     hasNew = true;
+                    if (msg.user_id !== {{ auth()->id() }}) hasNewFromOther = true;
                     updateUserRow(currentConversationId, msg.body, msg.created_at);
                 }
             });
+
+            if (hasNewFromOther) playNotificationSound();
 
             // Update tick status based on receipts
             (data.read_ids || []).forEach(id => updateTick(id, 'read'));
@@ -893,6 +897,12 @@
         } catch (e) {
             console.error('Poll error', e);
         }
+    }
+
+    const notifAudio = new Audio('{{ asset("notification_message-best-notification-1-286672.mp3") }}');
+    function playNotificationSound() {
+        notifAudio.currentTime = 0;
+        notifAudio.play().catch(() => {});
     }
 
     function updateTick(messageId, status) {
