@@ -216,11 +216,14 @@
     const recordingWaveform = document.getElementById('recordingWaveform');
     const recordingTimer = document.getElementById('recordingTimer');
     const mobileBackBtn = document.getElementById('mobileBackBtn');
-    const pdfViewerModal = document.getElementById('pdfViewerModal');
-    const pdfViewerFrame = document.getElementById('pdfViewerFrame');
-    const pdfViewerTitle = document.getElementById('pdfViewerTitle');
-    const pdfViewerDownload = document.getElementById('pdfViewerDownload');
-    const pdfViewerClose = document.getElementById('pdfViewerClose');
+    const fileViewerModal = document.getElementById('fileViewerModal');
+    const fileViewerFrame = document.getElementById('fileViewerFrame');
+    const fileViewerImage = document.getElementById('fileViewerImage');
+    const fileViewerTitle = document.getElementById('fileViewerTitle');
+    const fileViewerDownload = document.getElementById('fileViewerDownload');
+    const fileViewerClose = document.getElementById('fileViewerClose');
+    const fileViewerUnsupported = document.getElementById('fileViewerUnsupported');
+    const fileViewerUnsupportedDownload = document.getElementById('fileViewerUnsupportedDownload');
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
@@ -624,32 +627,59 @@
             toggleVoicePlay(btn);
             return;
         }
-        const viewPdf = e.target.closest('.view-pdf-btn');
-        if (viewPdf) {
+        const viewFile = e.target.closest('.view-file-btn');
+        if (viewFile) {
             e.preventDefault();
-            openPdfViewer(viewPdf.dataset.url, viewPdf.dataset.name);
+            openFileViewer(viewFile.dataset.url, viewFile.dataset.name);
+            return;
+        }
+        const viewImage = e.target.closest('.view-image-btn');
+        if (viewImage) {
+            e.preventDefault();
+            openFileViewer(viewImage.dataset.url, viewImage.dataset.name);
             return;
         }
     });
 
-    pdfViewerClose?.addEventListener('click', closePdfViewer);
-    pdfViewerModal?.addEventListener('click', function(e) {
-        if (e.target === pdfViewerModal) closePdfViewer();
+    fileViewerClose?.addEventListener('click', closeFileViewer);
+    fileViewerModal?.addEventListener('click', function(e) {
+        if (e.target === fileViewerModal) closeFileViewer();
     });
 
-    function openPdfViewer(url, fileName) {
-        pdfViewerTitle.textContent = fileName || 'PDF Document';
-        pdfViewerDownload.href = url;
-        pdfViewerDownload.download = fileName || 'document.pdf';
-        pdfViewerFrame.src = url;
-        pdfViewerModal.classList.remove('hidden');
-        pdfViewerModal.classList.add('flex');
+    function openFileViewer(url, fileName) {
+        fileViewerTitle.textContent = fileName || 'File Preview';
+        fileViewerDownload.href = url;
+        fileViewerDownload.download = fileName || 'file';
+        fileViewerUnsupportedDownload.href = url;
+        fileViewerUnsupportedDownload.download = fileName || 'file';
+
+        fileViewerImage.classList.add('hidden');
+        fileViewerFrame.classList.add('hidden');
+        fileViewerUnsupported.classList.add('hidden');
+
+        const isImage = /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(fileName || url);
+        const isPdf = /\.pdf$/i.test(fileName || url);
+        const isPreviewable = /\.(txt|html?|svg)$/i.test(fileName || url);
+
+        if (isImage) {
+            fileViewerImage.src = url;
+            fileViewerImage.classList.remove('hidden');
+        } else if (isPdf || isPreviewable) {
+            fileViewerFrame.src = url;
+            fileViewerFrame.classList.remove('hidden');
+        } else {
+            fileViewerUnsupported.classList.remove('hidden');
+        }
+
+        fileViewerModal.classList.remove('hidden');
+        fileViewerModal.classList.add('flex');
     }
 
-    function closePdfViewer() {
-        pdfViewerModal.classList.add('hidden');
-        pdfViewerModal.classList.remove('flex');
-        pdfViewerFrame.src = '';
+    function closeFileViewer() {
+        fileViewerModal.classList.add('hidden');
+        fileViewerModal.classList.remove('flex');
+        fileViewerFrame.src = '';
+        fileViewerImage.src = '';
     }
 
     function toggleVoicePlay(btn) {
@@ -727,14 +757,16 @@
 
     function renderImageAttachment(imageUrl, fileName, isMe) {
         return `
-            <div class="group relative my-2.5 max-w-full">
-                <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center z-10">
-                    <a href="${imageUrl}" download="${escapeHtml(fileName)}"
-                       class="inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 focus:ring-4 focus:outline-none focus:ring-white transition-colors">
+            <div class="group relative my-2.5 max-w-full cursor-pointer">
+                <img src="${imageUrl}" alt="${escapeHtml(fileName)}" class="rounded-lg max-w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.02]">
+                <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center gap-2 z-10">
+                    <button type="button" class="view-image-btn inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 transition-colors" data-url="${imageUrl}" data-name="${escapeHtml(fileName)}" title="View">
+                        <i class="fa-solid fa-eye text-white"></i>
+                    </button>
+                    <a href="${imageUrl}" download="${escapeHtml(fileName)}" class="inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 transition-colors" title="Download">
                         <i class="fa-solid fa-download text-white"></i>
                     </a>
                 </div>
-                <img src="${imageUrl}" alt="${escapeHtml(fileName)}" class="rounded-lg max-w-full h-auto object-cover">
             </div>`;
     }
 
@@ -746,29 +778,44 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
+    function getFileIcon(fileName) {
+        if (/\.pdf$/i.test(fileName)) return 'fa-file-pdf text-red-500';
+        if (/\.(doc|docx)$/i.test(fileName)) return 'fa-file-word text-blue-500';
+        if (/\.(xls|xlsx)$/i.test(fileName)) return 'fa-file-excel text-emerald-600';
+        if (/\.(jpg|jpeg|png|gif|webp|svg)$/i.test(fileName)) return 'fa-file-image text-purple-500';
+        if (/\.txt$/i.test(fileName)) return 'fa-file-lines text-slate-500';
+        return 'fa-file text-slate-500';
+    }
+
+    function getFileType(fileName) {
+        if (/\.pdf$/i.test(fileName)) return 'PDF';
+        if (/\.(doc|docx)$/i.test(fileName)) return 'DOC';
+        if (/\.(xls|xlsx)$/i.test(fileName)) return 'XLS';
+        if (/\.txt$/i.test(fileName)) return 'TXT';
+        return 'FILE';
+    }
+
     function renderFileAttachment(fileUrl, fileName, fileSize, isMe) {
-        const isPdf = /\.pdf$/i.test(fileName || '');
+        const iconClass = getFileIcon(fileName);
+        const fileType = getFileType(fileName);
         return `
-            <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2">
+            <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2.5 hover:bg-slate-50 transition-colors">
                 <div class="me-1.5 flex-1 min-w-0">
                     <span class="flex items-center gap-2 text-sm font-medium text-slate-800 pb-1">
-                        <i class="fa-solid fa-file-pdf text-red-500 w-5 h-5 shrink-0"></i>
+                        <i class="fa-solid ${iconClass} w-5 h-5 shrink-0 text-base"></i>
                         <span class="truncate">${escapeHtml(fileName)}</span>
                     </span>
-                    <span class="flex text-xs font-normal text-slate-500 gap-2">
+                    <span class="flex text-xs font-normal text-slate-500 gap-2 items-center">
                         ${formatBytes(fileSize)}
                         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="self-center" width="3" height="4" viewBox="0 0 3 4" fill="none"><circle cx="1.5" cy="2" r="1.5" fill="#6B7280"/></svg>
-                        PDF
+                        ${fileType}
                     </span>
                 </div>
                 <div class="inline-flex self-center items-center gap-1">
-                    ${isPdf ? `
-                        <button type="button" class="view-pdf-btn text-[#00a884] bg-white border border-slate-200 hover:bg-[#00a884] hover:text-white font-medium rounded-lg p-2 focus:outline-none transition-colors" data-url="${fileUrl}" data-name="${escapeHtml(fileName)}" title="View PDF">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                    ` : ''}
-                    <a href="${fileUrl}" download="${escapeHtml(fileName)}"
-                       class="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium rounded-lg p-2 focus:outline-none transition-colors" title="Download">
+                    <button type="button" class="view-file-btn text-[#00a884] bg-white border border-slate-200 hover:bg-[#00a884] hover:text-white font-medium rounded-lg p-2 focus:outline-none transition-colors" data-url="${fileUrl}" data-name="${escapeHtml(fileName)}" title="View file">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <a href="${fileUrl}" download="${escapeHtml(fileName)}" class="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium rounded-lg p-2 focus:outline-none transition-colors" title="Download">
                         <i class="fa-solid fa-download"></i>
                     </a>
                 </div>
