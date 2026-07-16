@@ -22,10 +22,8 @@ use Illuminate\Support\Facades\Route;
 | Landing page
 |--------------------------------------------------------------------------
 */
-// Landing page temporarily disabled; redirect to login
-Route::get('/', function () {
-    return redirect()->route('login');
-})->name('landing');
+// Landing page
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::post('/book-appointment', [LandingController::class, 'bookAppointment'])->name('landing.appointment.book');
 Route::get('/privacy-policy', [LandingController::class, 'privacy'])->name('landing.privacy');
 Route::get('/terms-of-service', [LandingController::class, 'terms'])->name('landing.terms');
