@@ -45,8 +45,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-sm flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
-                            <img src="{{ asset('implanticon.png') }}" alt="Implant Service" class="w-full h-full object-cover">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500/10 to-primary-700/10 rounded-sm flex items-center justify-center shadow-md shadow-primary-500/15 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <img src="{{ asset('implanticon.png') }}" alt="Implant Service" class="w-8 h-8 md:w-12 md:h-12 object-contain">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">01</span>
                     </div>
@@ -61,8 +61,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 rounded-sm flex items-center justify-center shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
-                            <img src="{{ asset('teethwhitening.png') }}" alt="Teeth Whitening" class="w-full h-full object-cover">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500/10 to-secondary-700/10 rounded-sm flex items-center justify-center shadow-md shadow-secondary-500/15 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <img src="{{ asset('teethwhitening.png') }}" alt="Teeth Whitening" class="w-8 h-8 md:w-12 md:h-12 object-contain">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">02</span>
                     </div>
@@ -77,8 +77,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-sm flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
-                            <img src="{{ asset('cosmeticdentisry.png') }}" alt="Cosmetic Dentistry" class="w-full h-full object-cover">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500/10 to-primary-700/10 rounded-sm flex items-center justify-center shadow-md shadow-primary-500/15 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <img src="{{ asset('cosmeticdentisry.png') }}" alt="Cosmetic Dentistry" class="w-8 h-8 md:w-12 md:h-12 object-contain">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">03</span>
                     </div>
@@ -93,8 +93,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 rounded-sm flex items-center justify-center shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
-                            <img src="{{ asset('expertdoctor.png') }}" alt="Expert Doctors" class="w-full h-full object-cover">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500/10 to-secondary-700/10 rounded-sm flex items-center justify-center shadow-md shadow-secondary-500/15 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <img src="{{ asset('expertdoctor.png') }}" alt="Expert Doctors" class="w-8 h-8 md:w-12 md:h-12 object-contain">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">04</span>
                     </div>
@@ -109,8 +109,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-sm flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
-                            <img src="{{ asset('modernequipment.png') }}" alt="Modern Equipment" class="w-full h-full object-cover">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500/10 to-primary-700/10 rounded-sm flex items-center justify-center shadow-md shadow-primary-500/15 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <img src="{{ asset('modernequipment.png') }}" alt="Modern Equipment" class="w-8 h-8 md:w-12 md:h-12 object-contain">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">05</span>
                     </div>
@@ -125,8 +125,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 rounded-sm flex items-center justify-center shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
-                            <img src="{{ asset('oethodontic.png') }}" alt="Orthodontic Service" class="w-full h-full object-cover">
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500/10 to-secondary-700/10 rounded-sm flex items-center justify-center shadow-md shadow-secondary-500/15 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <img src="{{ asset('oethodontic.png') }}" alt="Orthodontic Service" class="w-8 h-8 md:w-12 md:h-12 object-contain">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">06</span>
                     </div>
