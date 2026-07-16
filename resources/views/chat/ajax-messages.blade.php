@@ -51,36 +51,48 @@
                             @endforeach
                         </div>
                     @elseif($isImage)
-                        <div class="group relative my-2.5 max-w-full">
-                            <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center z-10">
-                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}"
-                                   class="inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 focus:ring-4 focus:outline-none focus:ring-white transition-colors">
+                        <div class="group relative my-2.5 max-w-full cursor-pointer">
+                            <img src="{{ $fileUrl }}" alt="{{ $msg->file_name }}" class="rounded-lg max-w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.02]">
+                            <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center gap-2 z-10">
+                                <button type="button" class="view-image-btn inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View">
+                                    <i class="fa-solid fa-eye text-white"></i>
+                                </button>
+                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}" class="inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 transition-colors" title="Download">
                                     <i class="fa-solid fa-download text-white"></i>
                                 </a>
                             </div>
-                            <img src="{{ $fileUrl }}" alt="{{ $msg->file_name }}" class="rounded-lg max-w-full h-auto object-cover">
                         </div>
                     @elseif($isFile)
-                        <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2">
+                        @php
+                            $fileIcon = preg_match('/\.pdf$/i', $msg->file_name) ? 'fa-file-pdf text-red-500'
+                                : (preg_match('/\.(doc|docx)$/i', $msg->file_name) ? 'fa-file-word text-blue-500'
+                                : (preg_match('/\.(xls|xlsx)$/i', $msg->file_name) ? 'fa-file-excel text-emerald-600'
+                                : (preg_match('/\.(jpg|jpeg|png|gif|webp|svg)$/i', $msg->file_name) ? 'fa-file-image text-purple-500'
+                                : (preg_match('/\.txt$/i', $msg->file_name) ? 'fa-file-lines text-slate-500'
+                                : 'fa-file text-slate-500'))));
+                            $fileType = preg_match('/\.pdf$/i', $msg->file_name) ? 'PDF'
+                                : (preg_match('/\.(doc|docx)$/i', $msg->file_name) ? 'DOC'
+                                : (preg_match('/\.(xls|xlsx)$/i', $msg->file_name) ? 'XLS'
+                                : (preg_match('/\.txt$/i', $msg->file_name) ? 'TXT'
+                                : 'FILE')));
+                        @endphp
+                        <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2.5 hover:bg-slate-50 transition-colors">
                             <div class="me-1.5 flex-1 min-w-0">
                                 <span class="flex items-center gap-2 text-sm font-medium text-slate-800 pb-1">
-                                    <i class="fa-solid fa-file-pdf text-red-500 w-5 h-5 shrink-0"></i>
+                                    <i class="fa-solid {{ $fileIcon }} w-5 h-5 shrink-0 text-base"></i>
                                     <span class="truncate">{{ $msg->file_name }}</span>
                                 </span>
-                                <span class="flex text-xs font-normal text-slate-500 gap-2">
+                                <span class="flex text-xs font-normal text-slate-500 gap-2 items-center">
                                     {{ number_format($msg->file_size / 1024, 1) }} KB
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="self-center" width="3" height="4" viewBox="0 0 3 4" fill="none"><circle cx="1.5" cy="2" r="1.5" fill="#6B7280"/></svg>
-                                    PDF
+                                    {{ $fileType }}
                                 </span>
                             </div>
                             <div class="inline-flex self-center items-center gap-1">
-                                @if(preg_match('/\.pdf$/i', $msg->file_name))
-                                    <button type="button" class="view-pdf-btn text-[#00a884] bg-white border border-slate-200 hover:bg-[#00a884] hover:text-white font-medium rounded-lg p-2 focus:outline-none transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View PDF">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                @endif
-                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}"
-                                   class="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium rounded-lg p-2 focus:outline-none transition-colors" title="Download">
+                                <button type="button" class="view-file-btn text-[#00a884] bg-white border border-slate-200 hover:bg-[#00a884] hover:text-white font-medium rounded-lg p-2 focus:outline-none transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View file">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}" class="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium rounded-lg p-2 focus:outline-none transition-colors" title="Download">
                                     <i class="fa-solid fa-download"></i>
                                 </a>
                             </div>
@@ -166,36 +178,48 @@
                             @endforeach
                         </div>
                     @elseif($isImage)
-                        <div class="group relative my-2.5 max-w-full">
-                            <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center z-10">
-                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}"
-                                   class="inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 focus:ring-4 focus:outline-none focus:ring-white transition-colors">
+                        <div class="group relative my-2.5 max-w-full cursor-pointer">
+                            <img src="{{ $fileUrl }}" alt="{{ $msg->file_name }}" class="rounded-lg max-w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.02]">
+                            <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center gap-2 z-10">
+                                <button type="button" class="view-image-btn inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View">
+                                    <i class="fa-solid fa-eye text-white"></i>
+                                </button>
+                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}" class="inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 transition-colors" title="Download">
                                     <i class="fa-solid fa-download text-white"></i>
                                 </a>
                             </div>
-                            <img src="{{ $fileUrl }}" alt="{{ $msg->file_name }}" class="rounded-lg max-w-full h-auto object-cover">
                         </div>
                     @elseif($isFile)
-                        <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2">
+                        @php
+                            $fileIcon = preg_match('/\.pdf$/i', $msg->file_name) ? 'fa-file-pdf text-red-500'
+                                : (preg_match('/\.(doc|docx)$/i', $msg->file_name) ? 'fa-file-word text-blue-500'
+                                : (preg_match('/\.(xls|xlsx)$/i', $msg->file_name) ? 'fa-file-excel text-emerald-600'
+                                : (preg_match('/\.(jpg|jpeg|png|gif|webp|svg)$/i', $msg->file_name) ? 'fa-file-image text-purple-500'
+                                : (preg_match('/\.txt$/i', $msg->file_name) ? 'fa-file-lines text-slate-500'
+                                : 'fa-file text-slate-500'))));
+                            $fileType = preg_match('/\.pdf$/i', $msg->file_name) ? 'PDF'
+                                : (preg_match('/\.(doc|docx)$/i', $msg->file_name) ? 'DOC'
+                                : (preg_match('/\.(xls|xlsx)$/i', $msg->file_name) ? 'XLS'
+                                : (preg_match('/\.txt$/i', $msg->file_name) ? 'TXT'
+                                : 'FILE')));
+                        @endphp
+                        <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2.5 hover:bg-slate-50 transition-colors">
                             <div class="me-1.5 flex-1 min-w-0">
                                 <span class="flex items-center gap-2 text-sm font-medium text-slate-800 pb-1">
-                                    <i class="fa-solid fa-file-pdf text-red-500 w-5 h-5 shrink-0"></i>
+                                    <i class="fa-solid {{ $fileIcon }} w-5 h-5 shrink-0 text-base"></i>
                                     <span class="truncate">{{ $msg->file_name }}</span>
                                 </span>
-                                <span class="flex text-xs font-normal text-slate-500 gap-2">
+                                <span class="flex text-xs font-normal text-slate-500 gap-2 items-center">
                                     {{ number_format($msg->file_size / 1024, 1) }} KB
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="self-center" width="3" height="4" viewBox="0 0 3 4" fill="none"><circle cx="1.5" cy="2" r="1.5" fill="#6B7280"/></svg>
-                                    PDF
+                                    {{ $fileType }}
                                 </span>
                             </div>
                             <div class="inline-flex self-center items-center gap-1">
-                                @if(preg_match('/\.pdf$/i', $msg->file_name))
-                                    <button type="button" class="view-pdf-btn text-[#00a884] bg-white border border-slate-200 hover:bg-[#00a884] hover:text-white font-medium rounded-lg p-2 focus:outline-none transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View PDF">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                @endif
-                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}"
-                                   class="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium rounded-lg p-2 focus:outline-none transition-colors" title="Download">
+                                <button type="button" class="view-file-btn text-[#00a884] bg-white border border-slate-200 hover:bg-[#00a884] hover:text-white font-medium rounded-lg p-2 focus:outline-none transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View file">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}" class="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium rounded-lg p-2 focus:outline-none transition-colors" title="Download">
                                     <i class="fa-solid fa-download"></i>
                                 </a>
                             </div>

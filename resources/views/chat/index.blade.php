@@ -118,24 +118,24 @@
                     @csrf
                     <div class="flex items-center gap-1.5">
                         <button type="button" id="chatFileBtn"
-                            class="group w-10 h-10 bg-white hover:bg-gradient-to-br hover:from-[#00a884] hover:to-[#008f72] text-slate-500 hover:text-white rounded-full shadow-sm border border-slate-200 hover:border-[#00a884] hover:shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105"
+                            class="group w-10 h-10 bg-white hover:bg-gradient-to-br hover:from-[#00a884] hover:to-[#008f72] rounded-full shadow-sm border border-slate-200 hover:border-[#00a884] hover:shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105 overflow-hidden"
                             title="Attach file">
-                            <i class="fa-solid fa-paperclip text-sm group-hover:rotate-12 transition-transform"></i>
+                            <img src="{{ asset('plus.png') }}" alt="Attach" class="w-5 h-5 object-contain group-hover:scale-110 transition-transform">
                         </button>
                         <input type="file" id="chatFileInput" class="hidden" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" multiple>
                         <button type="button" id="chatVoiceBtn"
-                            class="group w-10 h-10 bg-white hover:bg-gradient-to-br hover:from-red-500 hover:to-red-600 text-slate-500 hover:text-white rounded-full shadow-sm border border-slate-200 hover:border-red-400 hover:shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105"
+                            class="group w-10 h-10 bg-white hover:bg-gradient-to-br hover:from-red-500 hover:to-red-600 rounded-full shadow-sm border border-slate-200 hover:border-red-400 hover:shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105 overflow-hidden"
                             title="Voice message">
-                            <i class="fa-solid fa-microphone text-sm group-hover:scale-110 transition-transform"></i>
+                            <img src="{{ asset('microphone.png') }}" alt="Voice" class="w-5 h-5 object-contain group-hover:scale-110 transition-transform">
                         </button>
                     </div>
                     <input type="text" id="chatMessageInput" autocomplete="off"
                         class="flex-1 bg-white text-sm text-[#111b21] px-4 py-2.5 rounded-full border-none outline-none focus:ring-2 focus:ring-[#00a884] placeholder-[#667781]"
                         placeholder="Type a message..." maxlength="2000">
                     <button type="submit" id="chatMessageSend"
-                        class="group w-10 h-10 bg-gradient-to-br from-[#00a884] to-[#008f72] hover:from-[#008f72] hover:to-[#007a64] text-white rounded-full shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+                        class="group w-10 h-10 bg-gradient-to-br from-[#00a884] to-[#008f72] hover:from-[#008f72] hover:to-[#007a64] rounded-full shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 overflow-hidden"
                         title="Send message">
-                        <i class="fa-solid fa-paper-plane text-sm group-hover:translate-x-0.5 transition-transform"></i>
+                        <img src="{{ asset('send.gif') }}" alt="Send" class="w-5 h-5 object-contain">
                     </button>
                 </form>
                 <div id="voiceRecordingIndicator" class="hidden mt-2">
