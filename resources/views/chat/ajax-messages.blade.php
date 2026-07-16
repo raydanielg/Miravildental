@@ -34,15 +34,18 @@
                         <div class="grid grid-cols-2 gap-2 my-2.5">
                             @foreach(array_slice($msg->gallery_paths, 0, 4) as $index => $galleryUrl)
                                 @php $remaining = count($msg->gallery_paths) - 4; @endphp
-                                <div class="group relative aspect-square overflow-hidden rounded-lg {{ $index === 3 && $remaining > 0 ? 'bg-slate-900/50' : '' }}">
+                                <div class="group relative aspect-square overflow-hidden rounded-lg {{ $index === 3 && $remaining > 0 ? 'bg-slate-900/50' : '' }} cursor-pointer">
                                     @if($index === 3 && $remaining > 0)
                                         <div class="absolute inset-0 flex items-center justify-center z-10">
                                             <span class="text-xl font-medium text-white">+{{ $remaining }}</span>
                                         </div>
                                     @endif
-                                    <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
+                                    <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 z-20">
+                                        <button type="button" class="view-image-btn inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 transition-colors" data-url="{{ asset('storage/' . $galleryUrl) }}" data-name="gallery-image-{{ $index + 1 }}" title="View">
+                                            <i class="fa-solid fa-eye text-white text-xs"></i>
+                                        </button>
                                         <a href="{{ asset('storage/' . $galleryUrl) }}" download
-                                           class="inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 transition-colors">
+                                           class="inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 transition-colors" title="Download">
                                             <i class="fa-solid fa-download text-white text-xs"></i>
                                         </a>
                                     </div>
@@ -67,14 +70,16 @@
                             $fileIcon = preg_match('/\.pdf$/i', $msg->file_name) ? 'fa-file-pdf text-red-500'
                                 : (preg_match('/\.(doc|docx)$/i', $msg->file_name) ? 'fa-file-word text-blue-500'
                                 : (preg_match('/\.(xls|xlsx)$/i', $msg->file_name) ? 'fa-file-excel text-emerald-600'
+                                : (preg_match('/\.(ppt|pptx)$/i', $msg->file_name) ? 'fa-file-powerpoint text-orange-500'
                                 : (preg_match('/\.(jpg|jpeg|png|gif|webp|svg)$/i', $msg->file_name) ? 'fa-file-image text-purple-500'
                                 : (preg_match('/\.txt$/i', $msg->file_name) ? 'fa-file-lines text-slate-500'
-                                : 'fa-file text-slate-500'))));
+                                : 'fa-file text-slate-500')))));
                             $fileType = preg_match('/\.pdf$/i', $msg->file_name) ? 'PDF'
                                 : (preg_match('/\.(doc|docx)$/i', $msg->file_name) ? 'DOC'
                                 : (preg_match('/\.(xls|xlsx)$/i', $msg->file_name) ? 'XLS'
+                                : (preg_match('/\.(ppt|pptx)$/i', $msg->file_name) ? 'PPT'
                                 : (preg_match('/\.txt$/i', $msg->file_name) ? 'TXT'
-                                : 'FILE')));
+                                : 'FILE'))));
                         @endphp
                         <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2.5 hover:bg-slate-50 transition-colors">
                             <div class="me-1.5 flex-1 min-w-0">
@@ -161,15 +166,18 @@
                         <div class="grid grid-cols-2 gap-2 my-2.5">
                             @foreach(array_slice($msg->gallery_paths, 0, 4) as $index => $galleryUrl)
                                 @php $remaining = count($msg->gallery_paths) - 4; @endphp
-                                <div class="group relative aspect-square overflow-hidden rounded-lg {{ $index === 3 && $remaining > 0 ? 'bg-slate-900/50' : '' }}">
+                                <div class="group relative aspect-square overflow-hidden rounded-lg {{ $index === 3 && $remaining > 0 ? 'bg-slate-900/50' : '' }} cursor-pointer">
                                     @if($index === 3 && $remaining > 0)
                                         <div class="absolute inset-0 flex items-center justify-center z-10">
                                             <span class="text-xl font-medium text-white">+{{ $remaining }}</span>
                                         </div>
                                     @endif
-                                    <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
+                                    <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 z-20">
+                                        <button type="button" class="view-image-btn inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 transition-colors" data-url="{{ asset('storage/' . $galleryUrl) }}" data-name="gallery-image-{{ $index + 1 }}" title="View">
+                                            <i class="fa-solid fa-eye text-white text-xs"></i>
+                                        </button>
                                         <a href="{{ asset('storage/' . $galleryUrl) }}" download
-                                           class="inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 transition-colors">
+                                           class="inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 transition-colors" title="Download">
                                             <i class="fa-solid fa-download text-white text-xs"></i>
                                         </a>
                                     </div>
@@ -194,14 +202,16 @@
                             $fileIcon = preg_match('/\.pdf$/i', $msg->file_name) ? 'fa-file-pdf text-red-500'
                                 : (preg_match('/\.(doc|docx)$/i', $msg->file_name) ? 'fa-file-word text-blue-500'
                                 : (preg_match('/\.(xls|xlsx)$/i', $msg->file_name) ? 'fa-file-excel text-emerald-600'
+                                : (preg_match('/\.(ppt|pptx)$/i', $msg->file_name) ? 'fa-file-powerpoint text-orange-500'
                                 : (preg_match('/\.(jpg|jpeg|png|gif|webp|svg)$/i', $msg->file_name) ? 'fa-file-image text-purple-500'
                                 : (preg_match('/\.txt$/i', $msg->file_name) ? 'fa-file-lines text-slate-500'
-                                : 'fa-file text-slate-500'))));
+                                : 'fa-file text-slate-500')))));
                             $fileType = preg_match('/\.pdf$/i', $msg->file_name) ? 'PDF'
                                 : (preg_match('/\.(doc|docx)$/i', $msg->file_name) ? 'DOC'
                                 : (preg_match('/\.(xls|xlsx)$/i', $msg->file_name) ? 'XLS'
+                                : (preg_match('/\.(ppt|pptx)$/i', $msg->file_name) ? 'PPT'
                                 : (preg_match('/\.txt$/i', $msg->file_name) ? 'TXT'
-                                : 'FILE')));
+                                : 'FILE'))));
                         @endphp
                         <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2.5 hover:bg-slate-50 transition-colors">
                             <div class="me-1.5 flex-1 min-w-0">

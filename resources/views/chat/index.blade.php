@@ -122,7 +122,7 @@
                             title="Attach file">
                             <img src="{{ asset('plus.png') }}" alt="Attach" class="w-5 h-5 object-contain group-hover:scale-110 transition-transform">
                         </button>
-                        <input type="file" id="chatFileInput" class="hidden" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" multiple>
+                        <input type="file" id="chatFileInput" class="hidden" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" multiple>
                         <button type="button" id="chatVoiceBtn"
                             class="group w-10 h-10 bg-white hover:bg-gradient-to-br hover:from-red-500 hover:to-red-600 rounded-full shadow-sm border border-slate-200 hover:border-red-400 hover:shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105 overflow-hidden"
                             title="Voice message">
@@ -133,7 +133,7 @@
                         class="flex-1 bg-white text-sm text-[#111b21] px-4 py-2.5 rounded-full border-none outline-none focus:ring-2 focus:ring-[#00a884] placeholder-[#667781]"
                         placeholder="Type a message..." maxlength="2000">
                     <button type="submit" id="chatMessageSend"
-                        class="group w-10 h-10 bg-gradient-to-br from-[#00a884] to-[#008f72] hover:from-[#008f72] hover:to-[#007a64] rounded-full shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 overflow-hidden"
+                        class="group w-10 h-10 bg-white hover:bg-slate-50 rounded-full shadow-md hover:shadow-lg border border-slate-200 flex items-center justify-center transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 overflow-hidden"
                         title="Send message">
                         <img src="{{ asset('send.gif') }}" alt="Send" class="w-5 h-5 object-contain">
                     </button>
@@ -657,15 +657,23 @@
         fileViewerFrame.classList.add('hidden');
         fileViewerUnsupported.classList.add('hidden');
 
-        const isImage = /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(fileName || url);
-        const isPdf = /\.pdf$/i.test(fileName || url);
-        const isPreviewable = /\.(txt|html?|svg)$/i.test(fileName || url);
+        const name = (fileName || url).toLowerCase();
+        const isImage = /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(name);
+        const isPdf = /\.pdf$/i.test(name);
+        const isPreviewable = /\.(txt|html?|svg)$/i.test(name);
+        const isOffice = /\.(doc|docx|xls|xlsx|ppt|pptx)$/i.test(name);
 
         if (isImage) {
             fileViewerImage.src = url;
             fileViewerImage.classList.remove('hidden');
-        } else if (isPdf || isPreviewable) {
+        } else if (isPdf) {
             fileViewerFrame.src = url;
+            fileViewerFrame.classList.remove('hidden');
+        } else if (isPreviewable) {
+            fileViewerFrame.src = url;
+            fileViewerFrame.classList.remove('hidden');
+        } else if (isOffice) {
+            fileViewerFrame.src = 'https://docs.google.com/gview?url=' + encodeURIComponent(window.location.origin + url) + '&embedded=true';
             fileViewerFrame.classList.remove('hidden');
         } else {
             fileViewerUnsupported.classList.remove('hidden');
@@ -727,14 +735,17 @@
         return `
             <div class="grid grid-cols-2 gap-2 my-2.5">
                 ${visible.map((url, idx) => `
-                    <div class="group relative aspect-square overflow-hidden rounded-lg ${idx === 3 && remaining > 0 ? 'bg-slate-900/50' : ''}">
+                    <div class="group relative aspect-square overflow-hidden rounded-lg ${idx === 3 && remaining > 0 ? 'bg-slate-900/50' : ''} cursor-pointer">
                         ${idx === 3 && remaining > 0 ? `
                             <div class="absolute inset-0 flex items-center justify-center z-10">
                                 <span class="text-xl font-medium text-white">+${remaining}</span>
                             </div>
                         ` : ''}
-                        <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
-                            <a href="${url}" download class="inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 transition-colors">
+                        <div class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 z-20">
+                            <button type="button" class="view-image-btn inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 transition-colors" data-url="${url}" data-name="gallery-image-${idx + 1}" title="View">
+                                <i class="fa-solid fa-eye text-white text-xs"></i>
+                            </button>
+                            <a href="${url}" download class="inline-flex items-center justify-center rounded-full h-8 w-8 bg-white/30 hover:bg-white/50 transition-colors" title="Download">
                                 <i class="fa-solid fa-download text-white text-xs"></i>
                             </a>
                         </div>
@@ -782,6 +793,7 @@
         if (/\.pdf$/i.test(fileName)) return 'fa-file-pdf text-red-500';
         if (/\.(doc|docx)$/i.test(fileName)) return 'fa-file-word text-blue-500';
         if (/\.(xls|xlsx)$/i.test(fileName)) return 'fa-file-excel text-emerald-600';
+        if (/\.(ppt|pptx)$/i.test(fileName)) return 'fa-file-powerpoint text-orange-500';
         if (/\.(jpg|jpeg|png|gif|webp|svg)$/i.test(fileName)) return 'fa-file-image text-purple-500';
         if (/\.txt$/i.test(fileName)) return 'fa-file-lines text-slate-500';
         return 'fa-file text-slate-500';
@@ -791,6 +803,7 @@
         if (/\.pdf$/i.test(fileName)) return 'PDF';
         if (/\.(doc|docx)$/i.test(fileName)) return 'DOC';
         if (/\.(xls|xlsx)$/i.test(fileName)) return 'XLS';
+        if (/\.(ppt|pptx)$/i.test(fileName)) return 'PPT';
         if (/\.txt$/i.test(fileName)) return 'TXT';
         return 'FILE';
     }
