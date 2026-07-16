@@ -156,27 +156,38 @@
 </div>
 
 {{-- File Viewer Modal --}}
-<div id="fileViewerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/80 p-4">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
-        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50">
-            <h3 id="fileViewerTitle" class="font-semibold text-sm text-slate-800 truncate pr-4">File Preview</h3>
-            <div class="flex items-center gap-2">
-                <a id="fileViewerDownload" href="#" download class="text-xs font-medium text-[#00a884] hover:underline flex items-center gap-1">
+<div id="fileViewerModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 p-0 sm:p-4">
+    <div class="bg-white sm:rounded-xl rounded-none shadow-2xl w-full sm:max-w-5xl h-full sm:h-[90vh] flex flex-col overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white">
+            <div class="flex items-center gap-3 min-w-0">
+                <div id="fileViewerIconBox" class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                    <i id="fileViewerIcon" class="fa-solid fa-file text-slate-500"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 id="fileViewerTitle" class="font-semibold text-sm text-slate-800 truncate">File Preview</h3>
+                    <p id="fileViewerSubtitle" class="text-xs text-slate-400 truncate">Document</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <a id="fileViewerDownload" href="#" download class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-white bg-[#00a884] hover:bg-[#008f72] rounded-lg transition-colors">
                     <i class="fa-solid fa-download"></i>
                     <span class="hidden sm:inline">Download</span>
                 </a>
-                <button type="button" id="fileViewerClose" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
+                <button type="button" id="fileViewerClose" class="w-9 h-9 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
         </div>
-        <div class="flex-1 bg-slate-100 flex items-center justify-center overflow-auto">
-            <img id="fileViewerImage" src="" alt="File preview" class="max-w-full max-h-full object-contain hidden">
-            <iframe id="fileViewerFrame" src="" class="w-full h-full border-0 hidden"></iframe>
+        <div class="flex-1 bg-slate-200 flex items-center justify-center overflow-auto">
+            <img id="fileViewerImage" src="" alt="File preview" class="max-w-full max-h-full object-contain hidden shadow-lg">
+            <iframe id="fileViewerFrame" src="" class="w-full h-full border-0 hidden bg-white"></iframe>
             <div id="fileViewerUnsupported" class="hidden text-center py-20">
-                <i class="fa-solid fa-file text-6xl text-slate-300 mb-4"></i>
-                <p class="text-sm text-slate-500 mb-4">Preview not available for this file type</p>
-                <a id="fileViewerUnsupportedDownload" href="#" download class="inline-flex items-center gap-2 px-4 py-2 bg-[#00a884] text-white text-sm font-medium rounded-lg hover:bg-[#008f72] transition-colors">
+                <div class="w-20 h-20 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-file text-5xl text-slate-300"></i>
+                </div>
+                <p class="text-sm text-slate-500 mb-1">Preview not available for this file type</p>
+                <p id="fileViewerUnsupportedName" class="text-xs text-slate-400 mb-5"></p>
+                <a id="fileViewerUnsupportedDownload" href="#" download class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00a884] text-white text-sm font-medium rounded-lg hover:bg-[#008f72] transition-colors shadow-md">
                     <i class="fa-solid fa-download"></i>
                     Download file
                 </a>
@@ -220,10 +231,13 @@
     const fileViewerFrame = document.getElementById('fileViewerFrame');
     const fileViewerImage = document.getElementById('fileViewerImage');
     const fileViewerTitle = document.getElementById('fileViewerTitle');
+    const fileViewerSubtitle = document.getElementById('fileViewerSubtitle');
+    const fileViewerIcon = document.getElementById('fileViewerIcon');
     const fileViewerDownload = document.getElementById('fileViewerDownload');
     const fileViewerClose = document.getElementById('fileViewerClose');
     const fileViewerUnsupported = document.getElementById('fileViewerUnsupported');
     const fileViewerUnsupportedDownload = document.getElementById('fileViewerUnsupportedDownload');
+    const fileViewerUnsupportedName = document.getElementById('fileViewerUnsupportedName');
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
@@ -647,11 +661,18 @@
     });
 
     function openFileViewer(url, fileName) {
-        fileViewerTitle.textContent = fileName || 'File Preview';
+        const displayName = fileName || 'File Preview';
+        fileViewerTitle.textContent = displayName;
         fileViewerDownload.href = url;
         fileViewerDownload.download = fileName || 'file';
         fileViewerUnsupportedDownload.href = url;
         fileViewerUnsupportedDownload.download = fileName || 'file';
+        fileViewerUnsupportedName.textContent = displayName;
+
+        const iconClass = getFileIcon(displayName);
+        const fileType = getFileType(displayName);
+        fileViewerIcon.className = 'fa-solid ' + iconClass;
+        fileViewerSubtitle.textContent = fileType + ' Document';
 
         fileViewerImage.classList.add('hidden');
         fileViewerFrame.classList.add('hidden');
@@ -811,25 +832,22 @@
     function renderFileAttachment(fileUrl, fileName, fileSize, isMe) {
         const iconClass = getFileIcon(fileName);
         const fileType = getFileType(fileName);
+        const borderColor = isMe ? 'border-l-[#00a884]' : 'border-l-blue-400';
         return `
-            <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2.5 hover:bg-slate-50 transition-colors">
-                <div class="me-1.5 flex-1 min-w-0">
-                    <span class="flex items-center gap-2 text-sm font-medium text-slate-800 pb-1">
-                        <i class="fa-solid ${iconClass} w-5 h-5 shrink-0 text-base"></i>
-                        <span class="truncate">${escapeHtml(fileName)}</span>
-                    </span>
-                    <span class="flex text-xs font-normal text-slate-500 gap-2 items-center">
-                        ${formatBytes(fileSize)}
-                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="self-center" width="3" height="4" viewBox="0 0 3 4" fill="none"><circle cx="1.5" cy="2" r="1.5" fill="#6B7280"/></svg>
-                        ${fileType}
-                    </span>
+            <div class="flex items-center my-2 bg-white/80 rounded-lg overflow-hidden shadow-sm border-l-4 ${borderColor} hover:shadow-md transition-all">
+                <div class="w-12 h-12 flex items-center justify-center shrink-0 bg-slate-50">
+                    <i class="fa-solid ${iconClass} text-xl"></i>
                 </div>
-                <div class="inline-flex self-center items-center gap-1">
-                    <button type="button" class="view-file-btn text-[#00a884] bg-white border border-slate-200 hover:bg-[#00a884] hover:text-white font-medium rounded-lg p-2 focus:outline-none transition-colors" data-url="${fileUrl}" data-name="${escapeHtml(fileName)}" title="View file">
-                        <i class="fa-solid fa-eye"></i>
+                <div class="flex-1 min-w-0 py-2 px-3">
+                    <p class="text-sm font-medium text-slate-800 truncate">${escapeHtml(fileName)}</p>
+                    <p class="text-xs text-slate-400 mt-0.5">${formatBytes(fileSize)} · ${fileType}</p>
+                </div>
+                <div class="flex items-center gap-1 px-2 shrink-0">
+                    <button type="button" class="view-file-btn w-8 h-8 rounded-full text-[#00a884] hover:bg-[#00a884] hover:text-white flex items-center justify-center transition-colors" data-url="${fileUrl}" data-name="${escapeHtml(fileName)}" title="View file">
+                        <i class="fa-solid fa-eye text-sm"></i>
                     </button>
-                    <a href="${fileUrl}" download="${escapeHtml(fileName)}" class="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium rounded-lg p-2 focus:outline-none transition-colors" title="Download">
-                        <i class="fa-solid fa-download"></i>
+                    <a href="${fileUrl}" download="${escapeHtml(fileName)}" class="w-8 h-8 rounded-full text-slate-500 hover:bg-slate-200 flex items-center justify-center transition-colors" title="Download">
+                        <i class="fa-solid fa-download text-sm"></i>
                     </a>
                 </div>
             </div>`;

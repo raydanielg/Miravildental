@@ -80,25 +80,22 @@
                                 : (preg_match('/\.(ppt|pptx)$/i', $msg->file_name) ? 'PPT'
                                 : (preg_match('/\.txt$/i', $msg->file_name) ? 'TXT'
                                 : 'FILE'))));
+                            $borderColor = $msg->user_id === auth()->id() ? 'border-l-[#00a884]' : 'border-l-blue-400';
                         @endphp
-                        <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2.5 hover:bg-slate-50 transition-colors">
-                            <div class="me-1.5 flex-1 min-w-0">
-                                <span class="flex items-center gap-2 text-sm font-medium text-slate-800 pb-1">
-                                    <i class="fa-solid {{ $fileIcon }} w-5 h-5 shrink-0 text-base"></i>
-                                    <span class="truncate">{{ $msg->file_name }}</span>
-                                </span>
-                                <span class="flex text-xs font-normal text-slate-500 gap-2 items-center">
-                                    {{ number_format($msg->file_size / 1024, 1) }} KB
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="self-center" width="3" height="4" viewBox="0 0 3 4" fill="none"><circle cx="1.5" cy="2" r="1.5" fill="#6B7280"/></svg>
-                                    {{ $fileType }}
-                                </span>
+                        <div class="flex items-center my-2 bg-white/80 rounded-lg overflow-hidden shadow-sm border-l-4 {{ $borderColor }} hover:shadow-md transition-all">
+                            <div class="w-12 h-12 flex items-center justify-center shrink-0 bg-slate-50">
+                                <i class="fa-solid {{ $fileIcon }} text-xl"></i>
                             </div>
-                            <div class="inline-flex self-center items-center gap-1">
-                                <button type="button" class="view-file-btn text-[#00a884] bg-white border border-slate-200 hover:bg-[#00a884] hover:text-white font-medium rounded-lg p-2 focus:outline-none transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View file">
-                                    <i class="fa-solid fa-eye"></i>
+                            <div class="flex-1 min-w-0 py-2 px-3">
+                                <p class="text-sm font-medium text-slate-800 truncate">{{ $msg->file_name }}</p>
+                                <p class="text-xs text-slate-400 mt-0.5">{{ number_format($msg->file_size / 1024, 1) }} KB · {{ $fileType }}</p>
+                            </div>
+                            <div class="flex items-center gap-1 px-2 shrink-0">
+                                <button type="button" class="view-file-btn w-8 h-8 rounded-full text-[#00a884] hover:bg-[#00a884] hover:text-white flex items-center justify-center transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View file">
+                                    <i class="fa-solid fa-eye text-sm"></i>
                                 </button>
-                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}" class="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium rounded-lg p-2 focus:outline-none transition-colors" title="Download">
-                                    <i class="fa-solid fa-download"></i>
+                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}" class="w-8 h-8 rounded-full text-slate-500 hover:bg-slate-200 flex items-center justify-center transition-colors" title="Download">
+                                    <i class="fa-solid fa-download text-sm"></i>
                                 </a>
                             </div>
                         </div>
@@ -212,25 +209,22 @@
                                 : (preg_match('/\.(ppt|pptx)$/i', $msg->file_name) ? 'PPT'
                                 : (preg_match('/\.txt$/i', $msg->file_name) ? 'TXT'
                                 : 'FILE'))));
+                            $borderColor = $msg->user_id === auth()->id() ? 'border-l-[#00a884]' : 'border-l-blue-400';
                         @endphp
-                        <div class="flex items-start my-2.5 bg-slate-100 rounded-lg p-2.5 hover:bg-slate-50 transition-colors">
-                            <div class="me-1.5 flex-1 min-w-0">
-                                <span class="flex items-center gap-2 text-sm font-medium text-slate-800 pb-1">
-                                    <i class="fa-solid {{ $fileIcon }} w-5 h-5 shrink-0 text-base"></i>
-                                    <span class="truncate">{{ $msg->file_name }}</span>
-                                </span>
-                                <span class="flex text-xs font-normal text-slate-500 gap-2 items-center">
-                                    {{ number_format($msg->file_size / 1024, 1) }} KB
-                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="self-center" width="3" height="4" viewBox="0 0 3 4" fill="none"><circle cx="1.5" cy="2" r="1.5" fill="#6B7280"/></svg>
-                                    {{ $fileType }}
-                                </span>
+                        <div class="flex items-center my-2 bg-white/80 rounded-lg overflow-hidden shadow-sm border-l-4 {{ $borderColor }} hover:shadow-md transition-all">
+                            <div class="w-12 h-12 flex items-center justify-center shrink-0 bg-slate-50">
+                                <i class="fa-solid {{ $fileIcon }} text-xl"></i>
                             </div>
-                            <div class="inline-flex self-center items-center gap-1">
-                                <button type="button" class="view-file-btn text-[#00a884] bg-white border border-slate-200 hover:bg-[#00a884] hover:text-white font-medium rounded-lg p-2 focus:outline-none transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View file">
-                                    <i class="fa-solid fa-eye"></i>
+                            <div class="flex-1 min-w-0 py-2 px-3">
+                                <p class="text-sm font-medium text-slate-800 truncate">{{ $msg->file_name }}</p>
+                                <p class="text-xs text-slate-400 mt-0.5">{{ number_format($msg->file_size / 1024, 1) }} KB · {{ $fileType }}</p>
+                            </div>
+                            <div class="flex items-center gap-1 px-2 shrink-0">
+                                <button type="button" class="view-file-btn w-8 h-8 rounded-full text-[#00a884] hover:bg-[#00a884] hover:text-white flex items-center justify-center transition-colors" data-url="{{ $fileUrl }}" data-name="{{ $msg->file_name }}" title="View file">
+                                    <i class="fa-solid fa-eye text-sm"></i>
                                 </button>
-                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}" class="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 font-medium rounded-lg p-2 focus:outline-none transition-colors" title="Download">
-                                    <i class="fa-solid fa-download"></i>
+                                <a href="{{ $fileUrl }}" download="{{ $msg->file_name }}" class="w-8 h-8 rounded-full text-slate-500 hover:bg-slate-200 flex items-center justify-center transition-colors" title="Download">
+                                    <i class="fa-solid fa-download text-sm"></i>
                                 </a>
                             </div>
                         </div>
