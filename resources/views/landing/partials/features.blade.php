@@ -45,13 +45,13 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                            <i class="fa-solid fa-shield-halved"></i>
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-sm flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
+                            <img src="{{ asset('implanticon.png') }}" alt="Implant Service" class="w-full h-full object-cover">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">01</span>
                     </div>
-                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-primary-600 transition-colors">Tooth Protection</h3>
-                    <p class="text-slate-600 leading-relaxed text-sm">Prevent enamel loss and keep teeth healthy with daily brushing, flossing, and regular six-month checkups.</p>
+                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-primary-600 transition-colors">Implant Service</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">Restore missing teeth with durable, natural-looking dental implants designed for long-term function and confidence.</p>
                 </div>
                 <div class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 group-hover:w-full transition-all duration-500"></div>
             </div>
@@ -61,8 +61,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 rounded-sm flex items-center justify-center shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
+                            <img src="{{ asset('teethwhitening.png') }}" alt="Teeth Whitening" class="w-full h-full object-cover">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">02</span>
                     </div>
@@ -77,8 +77,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                            <i class="fa-solid fa-gem"></i>
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-sm flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
+                            <img src="{{ asset('cosmeticdentisry.png') }}" alt="Cosmetic Dentistry" class="w-full h-full object-cover">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">03</span>
                     </div>
@@ -93,8 +93,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                            <i class="fa-solid fa-user-doctor"></i>
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 rounded-sm flex items-center justify-center shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
+                            <img src="{{ asset('expertdoctor.png') }}" alt="Expert Doctors" class="w-full h-full object-cover">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">04</span>
                     </div>
@@ -109,8 +109,8 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                            <i class="fa-solid fa-hospital"></i>
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-sm flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
+                            <img src="{{ asset('modernequipment.png') }}" alt="Modern Equipment" class="w-full h-full object-cover">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-primary-100 transition-colors duration-300">05</span>
                     </div>
@@ -125,13 +125,13 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary-50 to-transparent rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:scale-150"></div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-4 md:mb-6">
-                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-sm flex items-center justify-center text-lg md:text-2xl shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                            <i class="fa-solid fa-headset"></i>
+                        <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-secondary-500 to-secondary-700 rounded-sm flex items-center justify-center shadow-lg shadow-secondary-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
+                            <img src="{{ asset('oethodontic.png') }}" alt="Orthodontic Service" class="w-full h-full object-cover">
                         </div>
                         <span class="text-3xl md:text-5xl font-black text-slate-100 group-hover:text-secondary-100 transition-colors duration-300">06</span>
                     </div>
-                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-secondary-600 transition-colors">24/7 Support</h3>
-                    <p class="text-slate-600 leading-relaxed text-sm">Flexible appointments, online booking, and responsive support to address your dental needs anytime.</p>
+                    <h3 class="text-base md:text-xl font-bold text-slate-900 mb-2 md:mb-3 group-hover:text-secondary-600 transition-colors">Orthodontic Service</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">Straighten misaligned teeth with braces and aligners for a healthier bite and a beautifully balanced smile.</p>
                 </div>
                 <div class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-secondary-500 to-primary-500 group-hover:w-full transition-all duration-500"></div>
             </div>
