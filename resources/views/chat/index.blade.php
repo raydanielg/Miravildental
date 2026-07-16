@@ -116,24 +116,26 @@
             <div class="p-3 bg-[#f0f2f5] border-t border-[#d1d7db]">
                 <form id="chatMessageForm" class="flex items-center gap-2">
                     @csrf
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" id="chatFileBtn"
+                            class="group w-10 h-10 bg-white hover:bg-gradient-to-br hover:from-[#00a884] hover:to-[#008f72] text-slate-500 hover:text-white rounded-full shadow-sm border border-slate-200 hover:border-[#00a884] hover:shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105"
+                            title="Attach file">
+                            <i class="fa-solid fa-paperclip text-sm group-hover:rotate-12 transition-transform"></i>
+                        </button>
+                        <input type="file" id="chatFileInput" class="hidden" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" multiple>
+                        <button type="button" id="chatVoiceBtn"
+                            class="group w-10 h-10 bg-white hover:bg-gradient-to-br hover:from-red-500 hover:to-red-600 text-slate-500 hover:text-white rounded-full shadow-sm border border-slate-200 hover:border-red-400 hover:shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105"
+                            title="Voice message">
+                            <i class="fa-solid fa-microphone text-sm group-hover:scale-110 transition-transform"></i>
+                        </button>
+                    </div>
                     <input type="text" id="chatMessageInput" autocomplete="off"
                         class="flex-1 bg-white text-sm text-[#111b21] px-4 py-2.5 rounded-full border-none outline-none focus:ring-2 focus:ring-[#00a884] placeholder-[#667781]"
                         placeholder="Type a message..." maxlength="2000">
-                    <button type="button" id="chatFileBtn"
-                        class="w-10 h-10 bg-white hover:bg-[#00a884] hover:text-white text-slate-600 rounded-full shadow-sm border border-slate-200 flex items-center justify-center transition-colors"
-                        title="Attach file">
-                        <i class="fa-solid fa-plus text-sm"></i>
-                    </button>
-                    <input type="file" id="chatFileInput" class="hidden" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" multiple>
-                    <button type="button" id="chatVoiceBtn"
-                        class="w-10 h-10 bg-white hover:bg-red-500 hover:text-white text-slate-600 rounded-full shadow-sm border border-slate-200 flex items-center justify-center transition-colors"
-                        title="Voice message">
-                        <i class="fa-solid fa-microphone text-sm"></i>
-                    </button>
                     <button type="submit" id="chatMessageSend"
-                        class="w-10 h-10 bg-[#00a884] hover:bg-[#008f72] text-white rounded-full shadow-sm flex items-center justify-center transition-colors disabled:opacity-50"
+                        class="group w-10 h-10 bg-gradient-to-br from-[#00a884] to-[#008f72] hover:from-[#008f72] hover:to-[#007a64] text-white rounded-full shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
                         title="Send message">
-                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                        <i class="fa-solid fa-paper-plane text-sm group-hover:translate-x-0.5 transition-transform"></i>
                     </button>
                 </form>
                 <div id="voiceRecordingIndicator" class="hidden mt-2">
@@ -153,23 +155,32 @@
     </div>
 </div>
 
-{{-- PDF Viewer Modal --}}
-<div id="pdfViewerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/70 p-4">
+{{-- File Viewer Modal --}}
+<div id="fileViewerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/80 p-4">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
         <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50">
-            <h3 id="pdfViewerTitle" class="font-semibold text-sm text-slate-800 truncate pr-4">PDF Document</h3>
+            <h3 id="fileViewerTitle" class="font-semibold text-sm text-slate-800 truncate pr-4">File Preview</h3>
             <div class="flex items-center gap-2">
-                <a id="pdfViewerDownload" href="#" download class="text-xs font-medium text-[#00a884] hover:underline flex items-center gap-1">
+                <a id="fileViewerDownload" href="#" download class="text-xs font-medium text-[#00a884] hover:underline flex items-center gap-1">
                     <i class="fa-solid fa-download"></i>
-                    Download
+                    <span class="hidden sm:inline">Download</span>
                 </a>
-                <button type="button" id="pdfViewerClose" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
+                <button type="button" id="fileViewerClose" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
         </div>
-        <div class="flex-1 bg-slate-100">
-            <iframe id="pdfViewerFrame" src="" class="w-full h-full border-0"></iframe>
+        <div class="flex-1 bg-slate-100 flex items-center justify-center overflow-auto">
+            <img id="fileViewerImage" src="" alt="File preview" class="max-w-full max-h-full object-contain hidden">
+            <iframe id="fileViewerFrame" src="" class="w-full h-full border-0 hidden"></iframe>
+            <div id="fileViewerUnsupported" class="hidden text-center py-20">
+                <i class="fa-solid fa-file text-6xl text-slate-300 mb-4"></i>
+                <p class="text-sm text-slate-500 mb-4">Preview not available for this file type</p>
+                <a id="fileViewerUnsupportedDownload" href="#" download class="inline-flex items-center gap-2 px-4 py-2 bg-[#00a884] text-white text-sm font-medium rounded-lg hover:bg-[#008f72] transition-colors">
+                    <i class="fa-solid fa-download"></i>
+                    Download file
+                </a>
+            </div>
         </div>
     </div>
 </div>

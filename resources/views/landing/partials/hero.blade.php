@@ -43,11 +43,11 @@
                     </span>
                     <span class="whitespace-nowrap">Book Appointment</span>
                 </a>
-                <a href="tel:+255789483550" class="group inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border-2 border-white/50 text-white px-4 md:px-8 py-3.5 md:py-4 rounded-sm font-semibold text-sm md:text-base hover:bg-white/20 hover:border-white/80 hover:-translate-y-1 transition-all duration-300 flex-shrink-0">
+                <a href="tel:+255753188852" class="group inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border-2 border-white/50 text-white px-4 md:px-8 py-3.5 md:py-4 rounded-sm font-semibold text-sm md:text-base hover:bg-white/20 hover:border-white/80 hover:-translate-y-1 transition-all duration-300 flex-shrink-0">
                     <span class="w-8 h-8 md:w-9 md:h-9 bg-white/20 text-white rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors">
                         <i class="fa-solid fa-phone text-sm"></i>
                     </span>
-                    <span class="whitespace-nowrap">+255 789 483 550</span>
+                    <span class="whitespace-nowrap">+255 753 188 852</span>
                 </a>
             </div>
 
