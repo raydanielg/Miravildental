@@ -84,6 +84,14 @@ class AppointmentController extends Controller
         $appt = Appointment::create($appointment);
         $appt->load(['patient', 'service']);
 
+        if ($appt->patient && $appt->patient->phone) {
+            app(SmsService::class)->sendToPatient($appt->patient, 'booking_confirmation', [
+                'date' => $appt->appointment_date->format('d/m/Y'),
+                'time' => $appt->start_time?->format('H:i'),
+                'service' => $appt->service?->name ?? 'dental service',
+            ]);
+        }
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,

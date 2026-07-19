@@ -10,6 +10,7 @@ use App\Models\NewsletterSubscriber;
 use App\Models\Patient;
 use App\Models\Service;
 use App\Models\User;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -139,6 +140,12 @@ class LandingController extends Controller
             'notes' => $validated['message'] ?? null,
             'cost' => $service->price ?? 0,
             'booked_by' => $doctor?->id,
+        ]);
+
+        app(SmsService::class)->sendToPatient($patient, 'booking_confirmation', [
+            'date' => $appointment->appointment_date->format('d/m/Y'),
+            'time' => $start->format('H:i'),
+            'service' => $service->name,
         ]);
 
         $message = 'Your appointment request has been received. Our reception team will review and approve it shortly.';

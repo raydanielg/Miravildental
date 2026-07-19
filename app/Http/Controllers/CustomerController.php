@@ -7,6 +7,7 @@ use App\Models\ClinicSetting;
 use App\Models\Patient;
 use App\Models\Service;
 use App\Models\User;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -68,6 +69,13 @@ class CustomerController extends Controller
         $validated['booked_by'] = $user->id;
 
         $appointment = Appointment::create($validated);
+        $appointment->load(['service']);
+
+        app(SmsService::class)->sendToPatient($patient, 'booking_confirmation', [
+            'date' => $appointment->appointment_date->format('d/m/Y'),
+            'time' => $appointment->start_time->format('H:i'),
+            'service' => $appointment->service?->name ?? 'dental service',
+        ]);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
