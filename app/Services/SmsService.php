@@ -165,11 +165,25 @@ class SmsService
             $body = $response->body();
 
             if ($response->successful()) {
-                $log->update([
-                    'status' => 'sent',
-                    'response' => $body,
-                    'provider_reference' => $this->extractReference($body),
-                ]);
+                $data = json_decode($body, true);
+                $msgStatus = $data['messages'][0]['status'] ?? null;
+                $groupName = $msgStatus['groupName'] ?? null;
+
+                // API returns 200 OK even for REJECTED messages — check actual status
+                if ($groupName === 'REJECTED' || $groupName === 'FAILED') {
+                    $log->update([
+                        'status' => 'failed',
+                        'response' => $body,
+                        'provider_reference' => $this->extractReference($body),
+                    ]);
+                    Log::error(ucfirst($channel).' SMS rejected', ['phone' => $to, 'response' => $body]);
+                } else {
+                    $log->update([
+                        'status' => 'sent',
+                        'response' => $body,
+                        'provider_reference' => $this->extractReference($body),
+                    ]);
+                }
             } else {
                 $log->update([
                     'status' => 'failed',
