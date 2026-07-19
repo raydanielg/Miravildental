@@ -103,6 +103,50 @@
             </button>
         </div>
     </form>
+
+    {{-- Test Results --}}
+    <div id="smsTestResult" class="hidden mt-5 border-t border-gray-100 pt-5">
+        <h4 class="text-xs font-semibold text-gray-900 mb-3">Matokeo ya SMS</h4>
+        <div id="smsResultBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mb-4"></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="bg-gray-50 rounded-lg p-3">
+                <span class="text-gray-500">Namba</span>
+                <p id="smsResultPhone" class="font-medium text-gray-900 mt-0.5"></p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-3">
+                <span class="text-gray-500">Muda</span>
+                <p id="smsResultTime" class="font-medium text-gray-900 mt-0.5"></p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-3">
+                <span class="text-gray-500">Message ID</span>
+                <p id="smsResultRef" class="font-medium text-gray-900 mt-0.5"></p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-3">
+                <span class="text-gray-500">Bei (TZS)</span>
+                <p id="smsResultPrice" class="font-medium text-gray-900 mt-0.5"></p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-3">
+                <span class="text-gray-500">Status</span>
+                <p id="smsResultStatus" class="font-medium text-gray-900 mt-0.5"></p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-3">
+                <span class="text-gray-500">SMS Count</span>
+                <p id="smsResultCount" class="font-medium text-gray-900 mt-0.5"></p>
+            </div>
+            <div class="md:col-span-2 bg-gray-50 rounded-lg p-3">
+                <span class="text-gray-500">Ujumbe</span>
+                <p id="smsResultMessage" class="font-medium text-gray-900 mt-0.5"></p>
+            </div>
+            <div class="md:col-span-2 bg-gray-50 rounded-lg p-3">
+                <span class="text-gray-500">Maelezo</span>
+                <p id="smsResultDesc" class="font-medium text-gray-900 mt-0.5"></p>
+            </div>
+            <div class="md:col-span-2 bg-gray-900 rounded-lg p-3">
+                <span class="text-gray-400">Full API Response</span>
+                <pre id="smsResultRaw" class="text-xs text-green-400 mt-1 overflow-x-auto whitespace-pre-wrap break-all"></pre>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -156,11 +200,40 @@ document.getElementById('smsTestForm').addEventListener('submit', function(e) {
     })
     .then(r => r.json())
     .then(data => {
+        const result = document.getElementById('smsTestResult');
+        const badge = document.getElementById('smsResultBadge');
+        const log = data.log || {};
+
+        result.classList.remove('hidden');
+
+        // Badge
         if (data.success) {
-            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: data.message, showConfirmButton: false, timer: 3000, timerProgressBar: true });
+            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mb-4 bg-emerald-50 text-emerald-700';
+            badge.innerHTML = '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Imetumwa';
         } else {
-            throw new Error(data.message || 'Imeshindwa.');
+            badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mb-4 bg-red-50 text-red-700';
+            badge.innerHTML = '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Imeshindwa';
         }
+
+        // Fill results
+        document.getElementById('smsResultPhone').textContent = log.phone || '-';
+        document.getElementById('smsResultTime').textContent = log.time || '-';
+        document.getElementById('smsResultRef').textContent = log.provider_reference || '-';
+        document.getElementById('smsResultPrice').textContent = log.price != null ? log.price + ' TZS' : '-';
+        document.getElementById('smsResultStatus').textContent = log.status_name || log.status || '-';
+        document.getElementById('smsResultCount').textContent = log.sms_count || '-';
+        document.getElementById('smsResultMessage').textContent = log.message || '-';
+        document.getElementById('smsResultDesc').textContent = log.status_description || (data.message || '-');
+
+        // Pretty print raw response
+        try {
+            const parsed = JSON.parse(log.response);
+            document.getElementById('smsResultRaw').textContent = JSON.stringify(parsed, null, 2);
+        } catch (_) {
+            document.getElementById('smsResultRaw').textContent = log.response || '-';
+        }
+
+        Swal.fire({ toast: true, position: 'top-end', icon: data.success ? 'success' : 'error', title: data.message, showConfirmButton: false, timer: 3000, timerProgressBar: true });
     })
     .catch(err => Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: err.message, showConfirmButton: false, timer: 4000 }))
     .finally(() => { btn.disabled = false; txt.textContent = original; });

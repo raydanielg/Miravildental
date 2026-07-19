@@ -149,24 +149,35 @@ class SmsController extends Controller
             $validated['phone'],
             $validated['message'],
             null,
-            'test',
+            'manual',
             auth()->id()
         );
 
         if ($request->ajax() || $request->wantsJson()) {
+            $response = json_decode($log->response, true);
+            $msgInfo = $response['messages'][0] ?? null;
+
             return response()->json([
-                'success' => true,
-                'message' => 'Ujumbe wa kupima umetumwa.',
+                'success' => $log->status === 'sent',
+                'message' => $log->status === 'sent'
+                    ? 'SMS imetumwa kwa mafanikio!'
+                    : 'SMS imeshindwa kutumwa.',
                 'log' => [
                     'phone' => $log->phone,
-                    'message' => \Illuminate\Support\Str::limit($log->message, 50),
+                    'message' => $log->message,
                     'status' => $log->status,
-                    'time' => $log->created_at->format('M d, H:i'),
+                    'time' => $log->created_at->format('M d, Y H:i'),
+                    'provider_reference' => $log->provider_reference,
+                    'response' => $log->response,
+                    'status_name' => $msgInfo['status']['name'] ?? null,
+                    'status_description' => $msgInfo['status']['description'] ?? null,
+                    'price' => $msgInfo['price'] ?? null,
+                    'sms_count' => $msgInfo['smsCount'] ?? null,
                 ],
             ]);
         }
 
-        return redirect()->route('settings.sms')->with('status', 'Test SMS queued.');
+        return redirect()->route('settings.sms')->with('status', 'Test SMS sent.');
     }
 
     public function logs(Request $request)
