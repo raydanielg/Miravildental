@@ -162,6 +162,9 @@ class AppointmentController extends Controller
         $validated['service_id'] = $validated['service_id'] ?? null;
         $validated['room_id'] = $validated['room_id'] ?? null;
 
+        $oldDate = $appointment->appointment_date?->format('Y-m-d');
+        $oldTime = $appointment->start_time?->format('H:i:s');
+
         $data = $this->buildAppointment($validated, $appointment->id);
 
         $conflict = $this->hasConflict($data, $appointment->id);
@@ -171,6 +174,17 @@ class AppointmentController extends Controller
 
         $appointment->update($data);
         $appointment->load(['patient', 'service', 'doctor', 'room']);
+
+        $dateChanged = $oldDate !== $appointment->appointment_date?->format('Y-m-d')
+            || $oldTime !== $appointment->start_time?->format('H:i:s');
+
+        if ($dateChanged && $appointment->patient && $appointment->patient->phone) {
+            app(SmsService::class)->sendToPatient($appointment->patient, 'reschedule', [
+                'date' => $appointment->appointment_date->format('d/m/Y'),
+                'time' => $appointment->start_time?->format('H:i'),
+                'service' => $appointment->service?->name ?? 'dental service',
+            ]);
+        }
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -196,13 +210,23 @@ class AppointmentController extends Controller
 
     public function destroy(Request $request, Appointment $appointment)
     {
+        $appointment->load(['patient', 'service']);
+
+        if ($appointment->patient && $appointment->patient->phone) {
+            app(SmsService::class)->sendToPatient($appointment->patient, 'cancellation', [
+                'date' => $appointment->appointment_date->format('d/m/Y'),
+                'time' => $appointment->start_time?->format('H:i'),
+                'service' => $appointment->service?->name ?? 'dental service',
+            ]);
+        }
+
         $appointment->delete();
 
         if ($request->ajax() || $request->wantsJson()) {
-            return response()->json(['success' => true, 'message' => 'Miadi imefutwa.']);
+            return response()->json(['success' => true, 'message' => 'Miadi imefutwa na ujumbe umetumwa kwa mgonjwa.']);
         }
 
-        return redirect()->route('appointments.index')->with('status', 'Appointment deleted successfully.');
+        return redirect()->route('appointments.index')->with('status', 'Appointment deleted and SMS sent to patient.');
     }
 
     public function updateStatus(Request $request, Appointment $appointment)
@@ -211,7 +235,27 @@ class AppointmentController extends Controller
             'status' => ['required', Rule::in(Appointment::STATUSES)],
         ]);
 
+        $oldStatus = $appointment->status;
         $appointment->update(['status' => $request->status]);
+        $appointment->load(['patient', 'service']);
+
+        if ($request->status === Appointment::STATUS_COMPLETED && $oldStatus !== Appointment::STATUS_COMPLETED
+            && $appointment->patient && $appointment->patient->phone) {
+            app(SmsService::class)->sendToPatient($appointment->patient, 'follow_up', [
+                'date' => $appointment->appointment_date->format('d/m/Y'),
+                'time' => $appointment->start_time?->format('H:i'),
+                'service' => $appointment->service?->name ?? 'dental service',
+            ]);
+        }
+
+        if ($request->status === Appointment::STATUS_CANCELLED && $oldStatus !== Appointment::STATUS_CANCELLED
+            && $appointment->patient && $appointment->patient->phone) {
+            app(SmsService::class)->sendToPatient($appointment->patient, 'cancellation', [
+                'date' => $appointment->appointment_date->format('d/m/Y'),
+                'time' => $appointment->start_time?->format('H:i'),
+                'service' => $appointment->service?->name ?? 'dental service',
+            ]);
+        }
 
         return redirect()->back()->with('status', 'Appointment status updated to ' . $appointment->statusLabel() . '.');
     }
