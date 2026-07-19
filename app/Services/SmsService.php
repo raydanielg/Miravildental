@@ -117,89 +117,50 @@ class SmsService
         }
 
         match ($settings->sms_provider) {
-            'nextsms' => $this->dispatchNextSms($log, $settings, $to),
-            'mobile_sms' => $this->dispatchMobileSms($log, $settings, $to),
+            'mobile_sms' => $this->dispatchMessagingService($log, $settings, $to, 'mobile'),
+            'internet_sms' => $this->dispatchMessagingService($log, $settings, $to, 'sms'),
             default => $log->update(['status' => 'failed', 'response' => 'Unsupported SMS provider: '.$settings->sms_provider]),
         };
     }
 
     /**
-     * Send via NextSMS (Basic auth).
+     * Send via messaging-service.co.tz — supports both Internet SMS and Mobile SMS (Bearer token).
+     *
+     * @param  string  $channel  'sms' for Internet SMS, 'mobile' for Mobile SMS
      */
-    protected function dispatchNextSms(SmsLog $log, ClinicSetting $settings, string $to): void
-    {
-        $url = $settings->sms_api_url;
-        $username = $settings->sms_api_username;
-        $password = $settings->sms_api_password;
-        $sender = $settings->sender_id;
-
-        if (! $url || ! $username || ! $password || ! $sender) {
-            $log->update(['status' => 'failed', 'response' => 'NextSMS credentials incomplete']);
-
-            return;
-        }
-
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => 'Basic '.base64_encode($username.':'.$password),
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-            ])->post($url, [
-                'from' => $sender,
-                'to' => $to,
-                'text' => $log->message,
-            ]);
-
-            $body = $response->body();
-
-            if ($response->successful()) {
-                $log->update([
-                    'status' => 'sent',
-                    'response' => $body,
-                    'provider_reference' => $this->extractReference($body),
-                ]);
-            } else {
-                $log->update([
-                    'status' => 'failed',
-                    'response' => $response->status().' | '.$body,
-                ]);
-                Log::error('NextSMS send failed', ['phone' => $to, 'response' => $body]);
-            }
-        } catch (\Throwable $e) {
-            $log->update(['status' => 'failed', 'response' => $e->getMessage()]);
-            Log::error('NextSMS exception', ['phone' => $to, 'error' => $e->getMessage()]);
-        }
-    }
-
-    /**
-     * Send via Mobile SMS — messaging-service.co.tz (Bearer token).
-     */
-    protected function dispatchMobileSms(SmsLog $log, ClinicSetting $settings, string $to): void
+    protected function dispatchMessagingService(SmsLog $log, ClinicSetting $settings, string $to, string $channel): void
     {
         $token = $settings->sms_api_key;
 
         if (! $token) {
-            $log->update(['status' => 'failed', 'response' => 'Mobile SMS API key (Bearer token) not configured']);
+            $log->update(['status' => 'failed', 'response' => ucfirst($channel).' SMS API key (Bearer token) not configured']);
 
             return;
         }
 
         $isTest = $log->trigger === 'test';
-        $baseUrl = rtrim($settings->sms_api_url ?: 'https://messaging-service.co.tz/api/mobile/v2', '/');
+        $baseUrl = rtrim($settings->sms_api_url ?: 'https://messaging-service.co.tz/api/'.$channel.'/v2', '/');
         $endpoint = $isTest ? $baseUrl.'/test/text/single' : $baseUrl.'/text/single';
 
         $reference = $log->trigger.'_'.$log->id;
 
+        $payload = [
+            'to' => $to,
+            'text' => $log->message,
+            'reference' => $reference,
+        ];
+
+        // Internet SMS requires a sender ID (from), Mobile SMS does not.
+        if ($channel === 'sms' && $settings->sender_id) {
+            $payload['from'] = $settings->sender_id;
+        }
+
         try {
-            $response = Http::withHeaders([
+            $response = Http::withOptions(['verify' => false])->withHeaders([
                 'Authorization' => 'Bearer '.$token,
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
-            ])->post($endpoint, [
-                'to' => $to,
-                'text' => $log->message,
-                'reference' => $reference,
-            ]);
+            ])->post($endpoint, $payload);
 
             $body = $response->body();
 
@@ -214,16 +175,16 @@ class SmsService
                     'status' => 'failed',
                     'response' => $response->status().' | '.$body,
                 ]);
-                Log::error('Mobile SMS send failed', ['phone' => $to, 'response' => $body]);
+                Log::error(ucfirst($channel).' SMS send failed', ['phone' => $to, 'response' => $body]);
             }
         } catch (\Throwable $e) {
             $log->update(['status' => 'failed', 'response' => $e->getMessage()]);
-            Log::error('Mobile SMS exception', ['phone' => $to, 'error' => $e->getMessage()]);
+            Log::error(ucfirst($channel).' SMS exception', ['phone' => $to, 'error' => $e->getMessage()]);
         }
     }
 
     /**
-     * Convert phone numbers to NextSMS 255... format.
+     * Convert phone numbers to 255... international format.
      */
     public function normalizePhone(string $phone): ?string
     {

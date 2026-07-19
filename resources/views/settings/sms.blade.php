@@ -26,12 +26,8 @@
                 <label class="block text-xs font-medium text-gray-700 mb-1">SMS Provider</label>
                 <select name="sms_provider" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
                     <option value="" @selected(old('sms_provider', $settings->sms_provider) == '')>Select provider</option>
-                    <option value="nextsms" @selected(old('sms_provider', $settings->sms_provider) == 'nextsms')>NextSMS</option>
+                    <option value="internet_sms" @selected(old('sms_provider', $settings->sms_provider) == 'internet_sms')>Internet SMS (messaging-service.co.tz)</option>
                     <option value="mobile_sms" @selected(old('sms_provider', $settings->sms_provider) == 'mobile_sms')>Mobile SMS (messaging-service.co.tz)</option>
-                    <option value="twilio" @selected(old('sms_provider', $settings->sms_provider) == 'twilio')>Twilio</option>
-                    <option value="africastalking" @selected(old('sms_provider', $settings->sms_provider) == 'africastalking')>Africa's Talking</option>
-                    <option value="beem" @selected(old('sms_provider', $settings->sms_provider) == 'beem')>Beem</option>
-                    <option value="custom" @selected(old('sms_provider', $settings->sms_provider) == 'custom')>Custom API</option>
                 </select>
             </div>
             <div>
