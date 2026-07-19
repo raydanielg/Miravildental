@@ -30,25 +30,13 @@
                     <option value="mobile_sms" @selected(old('sms_provider', $settings->sms_provider) == 'mobile_sms')>Mobile SMS (messaging-service.co.tz)</option>
                 </select>
             </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">API Username</label>
-                <input type="text" name="sms_api_username" value="{{ old('sms_api_username', $settings->sms_api_username) }}" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">API Password / Token</label>
-                <input type="password" name="sms_api_password" value="{{ old('sms_api_password', $settings->sms_api_password) }}" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">API Key</label>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-medium text-gray-700 mb-1">API Key (Bearer Token)</label>
                 <input type="text" name="sms_api_key" value="{{ old('sms_api_key', $settings->sms_api_key) }}" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">API Secret</label>
-                <input type="password" name="sms_api_secret" value="{{ old('sms_api_secret', $settings->sms_api_secret) }}" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
             </div>
             <div class="md:col-span-2">
                 <label class="block text-xs font-medium text-gray-700 mb-1">API Endpoint URL</label>
-                <input type="url" name="sms_api_url" value="{{ old('sms_api_url', $settings->sms_api_url) }}" placeholder="https://api.example.com/v1/sms/send" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
+                <input type="url" name="sms_api_url" value="{{ old('sms_api_url', $settings->sms_api_url) }}" placeholder="https://messaging-service.co.tz/api/sms/v2" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
             </div>
             <div class="md:col-span-2">
                 <label class="block text-xs font-medium text-gray-700 mb-1">Default Appointment Duration (min)</label>
