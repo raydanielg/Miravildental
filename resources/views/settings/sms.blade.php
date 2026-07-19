@@ -27,6 +27,7 @@
                 <select name="sms_provider" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-emerald-500">
                     <option value="" @selected(old('sms_provider', $settings->sms_provider) == '')>Select provider</option>
                     <option value="nextsms" @selected(old('sms_provider', $settings->sms_provider) == 'nextsms')>NextSMS</option>
+                    <option value="mobile_sms" @selected(old('sms_provider', $settings->sms_provider) == 'mobile_sms')>Mobile SMS (messaging-service.co.tz)</option>
                     <option value="twilio" @selected(old('sms_provider', $settings->sms_provider) == 'twilio')>Twilio</option>
                     <option value="africastalking" @selected(old('sms_provider', $settings->sms_provider) == 'africastalking')>Africa's Talking</option>
                     <option value="beem" @selected(old('sms_provider', $settings->sms_provider) == 'beem')>Beem</option>

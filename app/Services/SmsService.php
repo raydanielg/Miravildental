@@ -96,25 +96,14 @@ class SmsService
     }
 
     /**
-     * Dispatch a queued SMS log to the configured NextSMS provider.
+     * Dispatch a queued SMS log to the configured provider.
      */
     public function dispatchToProvider(SmsLog $log): void
     {
         $settings = ClinicSetting::current();
 
-        if (! $settings || $settings->sms_provider !== 'nextsms') {
-            $log->update(['status' => 'failed', 'response' => 'NextSMS provider not configured']);
-
-            return;
-        }
-
-        $url = $settings->sms_api_url;
-        $username = $settings->sms_api_username;
-        $password = $settings->sms_api_password;
-        $sender = $settings->sender_id;
-
-        if (! $url || ! $username || ! $password || ! $sender) {
-            $log->update(['status' => 'failed', 'response' => 'NextSMS credentials incomplete']);
+        if (! $settings || ! $settings->sms_provider) {
+            $log->update(['status' => 'failed', 'response' => 'SMS provider not configured']);
 
             return;
         }
@@ -123,6 +112,29 @@ class SmsService
 
         if (! $to) {
             $log->update(['status' => 'failed', 'response' => 'Invalid phone number: '.$log->phone]);
+
+            return;
+        }
+
+        match ($settings->sms_provider) {
+            'nextsms' => $this->dispatchNextSms($log, $settings, $to),
+            'mobile_sms' => $this->dispatchMobileSms($log, $settings, $to),
+            default => $log->update(['status' => 'failed', 'response' => 'Unsupported SMS provider: '.$settings->sms_provider]),
+        };
+    }
+
+    /**
+     * Send via NextSMS (Basic auth).
+     */
+    protected function dispatchNextSms(SmsLog $log, ClinicSetting $settings, string $to): void
+    {
+        $url = $settings->sms_api_url;
+        $username = $settings->sms_api_username;
+        $password = $settings->sms_api_password;
+        $sender = $settings->sender_id;
+
+        if (! $url || ! $username || ! $password || ! $sender) {
+            $log->update(['status' => 'failed', 'response' => 'NextSMS credentials incomplete']);
 
             return;
         }
@@ -156,6 +168,57 @@ class SmsService
         } catch (\Throwable $e) {
             $log->update(['status' => 'failed', 'response' => $e->getMessage()]);
             Log::error('NextSMS exception', ['phone' => $to, 'error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Send via Mobile SMS — messaging-service.co.tz (Bearer token).
+     */
+    protected function dispatchMobileSms(SmsLog $log, ClinicSetting $settings, string $to): void
+    {
+        $token = $settings->sms_api_key;
+
+        if (! $token) {
+            $log->update(['status' => 'failed', 'response' => 'Mobile SMS API key (Bearer token) not configured']);
+
+            return;
+        }
+
+        $isTest = $log->trigger === 'test';
+        $baseUrl = rtrim($settings->sms_api_url ?: 'https://messaging-service.co.tz/api/mobile/v2', '/');
+        $endpoint = $isTest ? $baseUrl.'/test/text/single' : $baseUrl.'/text/single';
+
+        $reference = $log->trigger.'_'.$log->id;
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer '.$token,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])->post($endpoint, [
+                'to' => $to,
+                'text' => $log->message,
+                'reference' => $reference,
+            ]);
+
+            $body = $response->body();
+
+            if ($response->successful()) {
+                $log->update([
+                    'status' => 'sent',
+                    'response' => $body,
+                    'provider_reference' => $this->extractReference($body),
+                ]);
+            } else {
+                $log->update([
+                    'status' => 'failed',
+                    'response' => $response->status().' | '.$body,
+                ]);
+                Log::error('Mobile SMS send failed', ['phone' => $to, 'response' => $body]);
+            }
+        } catch (\Throwable $e) {
+            $log->update(['status' => 'failed', 'response' => $e->getMessage()]);
+            Log::error('Mobile SMS exception', ['phone' => $to, 'error' => $e->getMessage()]);
         }
     }
 
