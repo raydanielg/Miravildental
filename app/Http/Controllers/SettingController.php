@@ -122,10 +122,7 @@ class SettingController extends Controller
         $validated = $request->validate([
             'sender_id' => 'required|string|max:20',
             'sms_provider' => 'nullable|string|max:50',
-            'sms_api_username' => 'nullable|string|max:255',
-            'sms_api_password' => 'nullable|string|max:255',
             'sms_api_key' => 'nullable|string|max:255',
-            'sms_api_secret' => 'nullable|string|max:255',
             'sms_api_url' => 'nullable|string|max:255',
             'sms_test_phone' => 'nullable|string|max:50',
             'default_appointment_duration' => 'required|integer|min:5',
