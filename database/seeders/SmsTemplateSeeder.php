@@ -69,7 +69,7 @@ class SmsTemplateSeeder extends Seeder
                 'name' => 'Post-Treatment Follow-up',
                 'trigger' => 'follow_up',
                 'category' => 'dental',
-                'body' => 'Hello {{name}}, we hope you are doing well after your visit. Keep up your oral hygiene and contact us if you have any concerns. -MIRAVIL',
+                'body' => 'Hello {{name}}, we hope you are doing well after your visit to Miravil Dental Clinic. Keep up your oral hygiene and contact us if you have any concerns. -MIRAVIL DENTAL CLINIC',
                 'is_active' => true,
                 'send_after_days' => 1,
             ],
