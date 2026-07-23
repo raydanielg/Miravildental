@@ -564,12 +564,20 @@
                 lastUnreadCount = count;
             }
 
+            let chatPollingActive = true;
+
             async function fetchLatestMessages() {
+                if (!chatPollingActive) return;
                 try {
                     const res = await fetch('{{ route("chat.latest-messages") }}?since_id=' + lastMaxId, {
                         headers: { 'X-Requested-With': 'XMLHttpRequest' }
                     });
-                    if (!res.ok) return;
+                    if (!res.ok) {
+                        if (res.status === 404) {
+                            chatPollingActive = false;
+                        }
+                        return;
+                    }
                     const data = await res.json();
 
                     if (data.max_id > lastMaxId) lastMaxId = data.max_id;
