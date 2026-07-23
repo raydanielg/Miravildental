@@ -70,7 +70,11 @@ class Patient extends Model
     {
         static::created(function (Patient $patient) {
             if ($patient->phone) {
-                app(SmsService::class)->sendWelcome($patient);
+                try {
+                    app(SmsService::class)->sendWelcome($patient);
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('Welcome SMS failed', ['patient' => $patient->id, 'error' => $e->getMessage()]);
+                }
             }
         });
     }

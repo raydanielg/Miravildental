@@ -257,7 +257,16 @@ patientForm.addEventListener('submit', function(e) {
         },
         body: formData,
     })
-    .then(r => r.json())
+    .then(r => {
+        if (!r.ok && r.status === 422) {
+            return r.json().then(errData => {
+                const errors = errData.errors || {};
+                const firstError = Object.values(errors)[0];
+                throw new Error(firstError || errData.message || 'Validation failed.');
+            });
+        }
+        return r.json();
+    })
     .then(data => {
         if (data.success) {
             Swal.fire({

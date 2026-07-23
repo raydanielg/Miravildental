@@ -66,5 +66,5 @@
 </div>
 <div class="mt-6 flex items-center gap-2">
     <button type="submit" class="px-4 py-2 text-xs font-medium bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Save Patient</button>
-    <a href="{{ route('patients.index') }}" class="px-4 py-2 text-xs font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</a>
+    <button type="button" onclick="typeof closePatientModal==='function'?closePatientModal():window.history.back()" class="px-4 py-2 text-xs font-medium border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 patient-cancel-btn">Cancel</button>
 </div>
