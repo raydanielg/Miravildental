@@ -76,11 +76,11 @@ class RegisterController extends Controller
             'role' => 'customer',
         ]);
 
-        $latest = Patient::orderByDesc('id')->value('file_number');
-        $number = 1;
-        if ($latest && preg_match('/MV-(\d+)/', $latest, $matches)) {
-            $number = (int) $matches[1] + 1;
-        }
+        $latest = Patient::withTrashed()
+            ->selectRaw("MAX(CAST(SUBSTRING(file_number, 4) AS UNSIGNED)) as max_num")
+            ->value('max_num');
+
+        $number = $latest ? ((int) $latest) + 1 : 1;
 
         Patient::create([
             'file_number' => 'MV-' . str_pad($number, 4, '0', STR_PAD_LEFT),
